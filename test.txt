@@ -1,0 +1,5 @@
+void laFuncion(param1, param2) {
+    WriteLine(param1 + param2);
+}
+
+start with laFuncion(5, 10);
