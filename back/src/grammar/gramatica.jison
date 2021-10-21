@@ -9,17 +9,35 @@
     const { WhileInstruccion } = require('./instrucciones/while-instruccion');
     const { DoWhileInstruccion } = require('./instrucciones/do-while-instruccion');
     const { FuncionInstruccion } = require('./instrucciones/funcion-instruccion');
+    const { MetodoInstruccion } = require('./instrucciones/declaracion-metodo');
     const { Declaracion } = require('./instrucciones/declaracion');
     const { Asignacion } = require('./instrucciones/asignacion');
     const { Ternario } = require('./instrucciones/ternario');
     const { Casteo } = require('./instrucciones/casteo');
+    const { DeclaracionVector } = require('./instrucciones/declaracion-vector');
+    const { AsignacionVector } = require('./instrucciones/asignacion-vector');
     const { Actualizacion, OpcionActualizacion } = require('./instrucciones/actualizacion');
     const { DeclaracionMultiple } = require('./instrucciones/declaracion-multiple');
+    const { DeclaracionDynamic } = require("./instrucciones/declaracion-dynamic");
+    const { AppendInstruccion } = require("./instrucciones/append");
+    const { SetValue } = require("./instrucciones/setValue");
+
     const { Aritmetica, OperacionAritmetica } = require('./Expresiones/aritmetica');
     const { Relacional, OpcionRelacional } = require('./Expresiones/relacional');
     const { Literal } = require('./Expresiones/literal');
     const { Acceso } = require('./Expresiones/acceso');
     const { ExpresionLogica, OperadoresLogicos } = require('./Expresiones/logica');
+    const { AccesoVector } = require("./Expresiones/acceso-vector");
+    const { GetValue } = require("./Expresiones/getValue");
+    const { ToLower } = require("./Expresiones/toLower");
+    const { ToUpper } = require("./Expresiones/toUpper");
+    const { Length } = require("./Expresiones/length");
+    const { Truncate } = require("./Expresiones/truncate");
+    const { Round } = require("./Expresiones/round");
+    const { TypeOf } = require("./Expresiones/typeof");
+    const { ToString } = require("./Expresiones/toString");
+    const { ToCharArray } = require("./Expresiones/toCharArray");
+
     const { Tipo } = require('./abstractas/retorno');
 %}
 
@@ -149,6 +167,10 @@ INSTRUCCION:
     {
         $$ = $1;
     }
+    | DECMETODO
+    {
+        $$ = $1;
+    }
 ;
 
 STRTWITH:
@@ -193,6 +215,17 @@ DECFUNCION:
     | TIPOSDATOS id '(' DEFPARAMETROS ')' STATEMENT
     {
         $$ = new FuncionInstruccion($2, $6, $4, $1, @1.first_line, @1.first_column);
+    }
+;
+
+DECMETODO:
+    'void' id '(' ')' STATEMENT
+    {
+        $$ = new MetodoInstruccion($2, $5, null, @1.first_line, @1.first_column);
+    }
+    | 'void' id '(' DEFPARAMETROS ')' STATEMENT
+    {
+        $$ = new MetodoInstruccion($2, $6, $4, @1.first_line, @1.first_column);
     }
 ;
 
@@ -244,6 +277,11 @@ SEGMENTO:
     | INSSWITCH
     | ASIGNACION ';'
     | ACTUALIZACION ';'
+    | DECVECTOR
+    | ASIGNACIONVECTOR
+    | DECDYNAMICLIST
+    | APPEND
+    | SETVALUE
 ;
 
 INSIF:
@@ -368,7 +406,46 @@ CASTEO:
 ;
 
 DECVECTOR:
-    TIPOSDATOS id '[' ']' ';'
+    TIPOSDATOS id '[' ']' '=' 'new' TIPOSDATOS '[' EXPRESION ']' ';'
+    {
+        $$ = new DeclaracionVector($1, $2, $9, null, @1.first_line, @1.first_column);
+    }
+    | TIPOSDATOS id '[' ']' '=' '{' LISTAEXPRESIONES '}' ';'
+    {
+        $$ = new DeclaracionVector($1, $2, null, $7, @1.first_line, @1.first_column);
+    }
+;
+
+ASIGNACIONVECTOR:
+    id '[' EXPRESION ']' '=' EXPRESION ';'
+    {
+        $$ = new AsignacionVector($1, $3, $6, @1.first_line, @1.first_column);
+    }
+;
+
+DECDYNAMICLIST:
+    'dynamiclist' '<' TIPOSDATOS '>' id '=' 'new' 'dynamiclist' '<' TIPOSDATOS '>' ';'
+    {
+        $$ = new DeclaracionDynamic($3, $5, null, @1.first_line, @1.first_column);
+    }
+    | 'dynamiclist' '<' TIPOSDATOS '>' id '=' EXPRESION ';'
+    {
+        $$ = new DeclaracionDynamic($3, $5, $7, @1.first_line, @1.first_column);
+    }
+;
+
+APPEND:
+    'append' '(' id ',' EXPRESION ')' ';'
+    {
+        $$ = new AppendInstruccion($3, $5, @1.first_line, @1.first_column);
+    }
+;
+
+SETVALUE:
+    'setvalue' '(' id ',' EXPRESION ',' EXPRESION ')' ';'
+    {
+        $$ = new SetValue($3, $5, $7, @1.first_line, @1.first_column);
+    }
 ;
 
 FORINICIO:
@@ -555,6 +632,46 @@ VALOR:
     {
         $$ = new Acceso($1, @1.first_line, @1.first_column);
     }
+    | id '[' EXPRESION ']'
+    {
+        $$ = new AccesoVector($1, $3, @1.first_line, @1.first_column);
+    }
+    | 'getvalue' '(' id ',' EXPRESION ')'
+    {
+        $$ = new GetValue($3, $5, @1.first_line, @1.first_column);
+    }
+    | 'tolower' '(' EXPRESION ')'
+    {
+        $$ = new ToLower($3, @1.first_line, @1.first_column);
+    }
+    | 'toupper' '(' EXPRESION ')'
+    {
+        $$ = new ToUpper($3, @1.first_line, @1.first_column);
+    }
+    | 'length' '(' id ')'
+    {
+        $$ = new Length($3, @1.first_line, @1.first_column);
+    }
+    | 'truncate' '(' EXPRESION ')'
+    {
+        $$ = new Truncate($3, @1.first_line, @1.first_column);
+    }
+    | 'round' '(' EXPRESION ')'
+    {
+        $$ = new Round($3, @1.first_line, @1.first_column);
+    }
+    | 'typeof' '(' EXPRESION ')'
+    {
+        $$ = new TypeOf($3, @1.first_line, @1.first_column);
+    }
+    | 'tostring' '(' EXPRESION ')'
+    {
+        $$ = new ToString($3, @1.first_line, @1.first_column);
+    }
+    | 'tochararray' '(' EXPRESION ')'
+    {
+        $$ = new ToCharArray($3, @1.first_line, @1.first_column);
+    }
     | '(' EXPRESION ')'
     {
         console.log($2);
@@ -583,10 +700,6 @@ TIPOSDATOS:
     | 'char'
     {
         $$ = Tipo.CHAR;
-    }
-    | 'void'
-    {
-        $$ = Tipo.VOID;
     }
 ;
 

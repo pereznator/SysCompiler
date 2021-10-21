@@ -1,5 +1,9 @@
-void laFuncion(param1, param2) {
+void laFuncion(double param1, int param2) {
     WriteLine(param1 + param2);
+    int vector[] = new int[param1 + param2];
+    DynamicList<string> dymList1 = new DynamicList<string>;
+    append(dymList1, "hola mundo");
+    setValue(dymList1, vector[0], "mundo hdp"+100);
 }
 
 start with laFuncion(5, 10);
