@@ -1,6 +1,7 @@
 import { Instruccion } from '../abstractas/instruccion';
 import { Expresion } from '../abstractas/expresion';
 import { Entorno } from '../simbolos/entorno';
+import { Error_ } from '../Error/error';
 
 export class WriteLine extends Instruccion {
 
@@ -11,7 +12,13 @@ export class WriteLine extends Instruccion {
     }
 
     public ejecutar(env: Entorno) {
-        const exp = this.expresion.ejecutar(env);
-        console.log(exp);
+        console.log('Ejecutando writeline');
+        try {
+            const exp = this.expresion.ejecutar(env);
+            console.log(exp);
+        }catch (err) {
+            console.log(err);
+            throw new Error_(this.linea, this.columna, 'Semantico', 'No se pudo ejecutar writeline.');
+        }
     }
 }

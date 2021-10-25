@@ -3,15 +3,17 @@ import { Entorno } from "../simbolos/entorno";
 import { Expresion } from "../abstractas/expresion";
 import { Tipo } from '../abstractas/retorno';
 import { Ternario } from './ternario';
+import { Error_ } from '../Error/error';
+import { Casteo } from './casteo';
 
 export class Declaracion extends Instruccion{
 
     public id : string;
-    public value : Expresion | Ternario;
+    public value : Expresion | Ternario | Casteo;
     public tipoInstruccion = 'declaracion';
     public tipo: Tipo;
 
-    constructor(tipo: Tipo,  id: string, value : Expresion | Ternario, line : number, column: number){
+    constructor(tipo: Tipo,  id: string, value : Expresion | Ternario | Casteo, line : number, column: number){
         super(line, column);
         this.id = id;
         this.value = value;
@@ -19,8 +21,15 @@ export class Declaracion extends Instruccion{
     }
 
     public ejecutar(environment: Entorno) {
-        const val = this.value.ejecutar(environment);
-        environment.guardar(this.id, val.valor, val.tipo);
+        console.log('ejecutando declaracion');
+        if (this.value !== null) {
+            const val = this.value.ejecutar(environment);
+            if (this.tipo !== val.tipo) {
+                throw new Error_(this.linea, this.columna, 'Semantico', `No coinciden los valores para declaracion de ${this.id}`);
+            }
+            return environment.guardar(this.id, val.valor, val.tipo);
+        }
+        environment.guardar(this.id, null, this.tipo);
     }
 
 }

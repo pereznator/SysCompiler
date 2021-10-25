@@ -24,6 +24,9 @@ export class Actualizacion extends Instruccion{
     public ejecutar(environment: Entorno) {
         const val = environment.getVar(this.id);
         if (val !== undefined && val != null) {
+            if (val.tipo !== Tipo.INT && val.tipo !== Tipo.DOUBLE) {
+                throw new Error_(this.linea, this.columna, 'Semantico', `Variable ${this.id} no se puede incrementar o decrementar numericamente.`)
+            }
             if (this.operacion == OpcionActualizacion.MASMAS) {
                 val.valor = Number(val.valor) + 1;
             }else {

@@ -11,7 +11,7 @@ class Round extends expresion_1.Expresion {
     }
     ejecutar(env) {
         const val = this.valor.ejecutar(env);
-        if (val.tipo !== retorno_1.Tipo.DOBULE && val.tipo !== retorno_1.Tipo.INT) {
+        if (val.tipo !== retorno_1.Tipo.DOUBLE && val.tipo !== retorno_1.Tipo.INT) {
             throw new error_1.Error_(this.linea, this.columna, 'Semantico', 'Truncate solo acepta valores numericos');
         }
         return { valor: Math.round(val.valor), tipo: retorno_1.Tipo.INT };

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const instruccion_1 = require("../abstractas/instruccion");
+const error_1 = require("../Error/error");
 class WriteLine extends instruccion_1.Instruccion {
     constructor(expresion, linea, columna) {
         super(linea, columna);
@@ -8,8 +9,15 @@ class WriteLine extends instruccion_1.Instruccion {
         this.tipoInstruccion = 'writeline';
     }
     ejecutar(env) {
-        const exp = this.expresion.ejecutar(env);
-        console.log(exp);
+        console.log('Ejecutando writeline');
+        try {
+            const exp = this.expresion.ejecutar(env);
+            console.log(exp);
+        }
+        catch (err) {
+            console.log(err);
+            throw new error_1.Error_(this.linea, this.columna, 'Semantico', 'No se pudo ejecutar writeline.');
+        }
     }
 }
 exports.WriteLine = WriteLine;

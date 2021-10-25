@@ -10,7 +10,8 @@ class MetodoInstruccion extends instruccion_1.Instruccion {
         this.tipoInstruccion = 'metodo';
     }
     ejecutar(entorno) {
-        //return entorno.guardarFuncion(this.id, this);
+        console.log('ejecutando metodo declaracion');
+        return entorno.guardarFuncion(this.id, this);
     }
 }
 exports.MetodoInstruccion = MetodoInstruccion;

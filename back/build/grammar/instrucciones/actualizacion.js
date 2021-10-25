@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const instruccion_1 = require("../abstractas/instruccion");
+const retorno_1 = require("../abstractas/retorno");
 const error_1 = require("../Error/error");
 var OpcionActualizacion;
 (function (OpcionActualizacion) {
@@ -17,6 +18,9 @@ class Actualizacion extends instruccion_1.Instruccion {
     ejecutar(environment) {
         const val = environment.getVar(this.id);
         if (val !== undefined && val != null) {
+            if (val.tipo !== retorno_1.Tipo.INT && val.tipo !== retorno_1.Tipo.DOUBLE) {
+                throw new error_1.Error_(this.linea, this.columna, 'Semantico', `Variable ${this.id} no se puede incrementar o decrementar numericamente.`);
+            }
             if (this.operacion == OpcionActualizacion.MASMAS) {
                 val.valor = Number(val.valor) + 1;
             }

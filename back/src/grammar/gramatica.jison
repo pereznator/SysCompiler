@@ -21,6 +21,7 @@
     const { DeclaracionDynamic } = require("./instrucciones/declaracion-dynamic");
     const { AppendInstruccion } = require("./instrucciones/append");
     const { SetValue } = require("./instrucciones/setValue");
+    const { StartWith } = require("./instrucciones/startWith");
 
     const { Aritmetica, OperacionAritmetica } = require('./Expresiones/aritmetica');
     const { Relacional, OpcionRelacional } = require('./Expresiones/relacional');
@@ -39,6 +40,10 @@
     const { ToCharArray } = require("./Expresiones/toCharArray");
 
     const { Tipo } = require('./abstractas/retorno');
+
+    
+    const { Error_ } = require('./Error/error');
+    const { errores } = require('./Error/errores');
 %}
 
 %lex
@@ -122,15 +127,16 @@ id ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*
 {cadena}    return "cadena"
 {caracter}  return "caracter"
 <<EOF>>     return "EOF"
-.           {console.log('[ERROR LEXICO]: ' + yytext + ', ' + yylloc.first_line + ', ' +  yylloc.column);}
+.           {console.log('[ERROR LEXICO]: ' + yytext + ', ' + yylloc.first_line + ', ' +  yylloc.column);
+                errores.push(new Error_(yylloc.first_line, yylloc.column, 'Lexico', yytext));
+            }
 
 /lex
 
-%left '!'
 %left "||"
 %left "&&"
-%left "==" "!="
-%left ">=" "<=" '>' '<'
+%left '!'
+%left ">=" "<=" '>' '<' "==" "!="
 %left "+" "-"
 %left "*" "/"
 %left '^' '%'
@@ -176,20 +182,17 @@ INSTRUCCION:
 STRTWITH:
     'start' 'with' LLAMADA
     {
-        console.log($1, $2);
-        $$ = $3;
+        $$ = new StartWith($3, @1.first_line, @1.first_column);
     }
 ;
 
 LLAMADA:
     id '(' ')' ';'
     {
-        console.log($1, $2, $3, $4);
         $$ = new Llamada($1, new Array(), @1.first_line, @1.first_column);
     }
     | id '(' LISTAEXPRESIONES ')' ';'
     {
-        console.log($1, $2, $3, $4, $5);
         $$ = new Llamada($1, $3, @1.first_line, @1.first_column);
     }
 ;
@@ -557,6 +560,10 @@ EXPRESION:
     {
         $$ = new Aritmetica($1, $3, OperacionAritmetica.MOD, @1.first_line, @1.first_column);
     }
+    | '-' EXPRESION
+    {
+        $$ = new Aritmetica(null, $2, OperacionAritmetica.NEG, @1.first_line, @1.first_column);
+    }
     | EXPRESION '<' EXPRESION
     {
         $$ = new Relacional($1, $3, OpcionRelacional.MENOR, @1.first_line, @1.first_column);
@@ -602,31 +609,31 @@ EXPRESION:
 VALOR:
     numero
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 0);
+        $$ = new Literal($1, @1.first_line, @1.first_column, Tipo.INT);
     }
     | decimal
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 1);
+        $$ = new Literal($1, @1.first_line, @1.first_column, Tipo.DOUBLE);
     }
     | cadena
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 2);
+        $$ = new Literal($1, @1.first_line, @1.first_column, Tipo.STRING);
     }
     | caracter
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 3);
+        $$ = new Literal($1, @1.first_line, @1.first_column, Tipo.CHAR);
     }
     | true
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 4);
+        $$ = new Literal($1, @1.first_line, @1.first_column, Tipo.BOOLEAN);
     }
     | false
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 4);
+        $$ = new Literal($1, @1.first_line, @1.first_column, Tipo.BOOLEAN);
     }
     | null
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 4);
+        $$ = new Literal($1, @1.first_line, @1.first_column, null);
     }
     | id
     {
@@ -674,7 +681,6 @@ VALOR:
     }
     | '(' EXPRESION ')'
     {
-        console.log($2);
         $$ = $2;
     }
 

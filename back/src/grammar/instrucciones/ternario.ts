@@ -1,7 +1,7 @@
 import { Instruccion } from '../abstractas/instruccion';
 import { Expresion } from '../abstractas/expresion';
 import { Entorno } from '../simbolos/entorno';
-import { Tipo } from '../abstractas/retorno';
+import { Tipo, Retorno } from '../abstractas/retorno';
 import { Error_ } from '../Error/error';
 
 export class Ternario extends Instruccion {
@@ -12,7 +12,7 @@ export class Ternario extends Instruccion {
         super(linea, columna);
     }
 
-    public ejecutar(env: Entorno) {
+    public ejecutar(env: Entorno): Retorno {
         const cond = this.condicion.ejecutar(env);
         let resultado = null;
         if (cond.tipo == Tipo.BOOLEAN) {

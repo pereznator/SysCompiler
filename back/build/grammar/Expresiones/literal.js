@@ -12,13 +12,17 @@ class Literal extends expresion_1.Expresion {
         if (this.tipo == 0)
             return { valor: Number(this.valor), tipo: retorno_1.Tipo.INT };
         else if (this.tipo == 1)
-            return { valor: Number(this.valor), tipo: retorno_1.Tipo.DOBULE };
+            return { valor: Number(this.valor), tipo: retorno_1.Tipo.DOUBLE };
         else if (this.tipo == 2)
-            return { valor: this.valor, tipo: retorno_1.Tipo.STRING };
+            return { valor: this.valor.replace('"', ''), tipo: retorno_1.Tipo.STRING };
         else if (this.tipo == 3)
-            return { valor: this.valor, tipo: retorno_1.Tipo.CHAR };
-        else if (this.tipo == 4)
-            return { valor: this.valor, tipo: retorno_1.Tipo.BOOLEAN };
+            return { valor: this.valor.replace("'", ""), tipo: retorno_1.Tipo.CHAR };
+        else if (this.tipo == 4) {
+            if (this.valor === 'false')
+                return { valor: false, tipo: retorno_1.Tipo.BOOLEAN };
+            else
+                return { valor: true, tipo: retorno_1.Tipo.BOOLEAN };
+        }
         else
             return { valor: null, tipo: retorno_1.Tipo.NULL };
     }

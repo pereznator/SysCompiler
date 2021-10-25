@@ -1,12 +1,11 @@
 export enum Tipo {
-    STRING,
     INT,
-    BOOLEAN,
-    NULL,
+    DOUBLE,
+    STRING,
     CHAR,
-    DOBULE,
+    BOOLEAN,
     ARRAY,
-    VOID
+    NULL,
 }
 
 export type Retorno = {

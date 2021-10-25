@@ -14,11 +14,20 @@ class ExpresionLogica extends expresion_1.Expresion {
         this.left = left;
         this.right = right;
         this.type = type;
+        this.tipoExpresion = 'logica';
         this.tipo = type;
     }
     ejecutar(environment) {
+        console.log('ejecutando expresion logica');
         const leftValue = this.left.ejecutar(environment);
-        const rightValue = this.right.ejecutar(environment);
+        let rightValue;
+        if (rightValue == null) {
+            console.log('rightvalue');
+            rightValue = leftValue;
+        }
+        else {
+            rightValue = this.right.ejecutar(environment);
+        }
         if (this.type == OperadoresLogicos.AND) {
             const result = leftValue.valor && rightValue.valor;
             return { valor: result, tipo: retorno_1.Tipo.BOOLEAN };

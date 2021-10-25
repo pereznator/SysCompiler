@@ -8,7 +8,7 @@ class Acceso extends expresion_1.Expresion {
     }
     ejecutar(environment) {
         const value = environment.getVar(this.id);
-        if (value == null)
+        if (value == null || value == undefined)
             throw new Error("La variable no existe");
         return { valor: value.valor, tipo: value.tipo };
     }

@@ -3,12 +3,13 @@ import { Simbolo } from './simbolo';
 import { Tipo } from '../abstractas/retorno';
 import { Vector } from './vector';
 import { DynamicList } from './dynamicList';
+import { MetodoInstruccion } from '../instrucciones/declaracion-metodo';
 
 
 export class Entorno {
 
     public variables: Map<String, Simbolo>;
-    public funciones: Map<string, FuncionInstruccion>;
+    public funciones: Map<string, FuncionInstruccion | MetodoInstruccion>;
     public vectores: Map<String, Vector>;
     public dynamicLists: Map<String, DynamicList>;
 
@@ -31,7 +32,7 @@ export class Entorno {
         this.variables.set(id, new Simbolo(valor, id, tipo));
     }
 
-    public guardarFuncion(id: string, funcion: FuncionInstruccion): void {
+    public guardarFuncion(id: string, funcion: FuncionInstruccion | MetodoInstruccion): void {
         this.funciones.set(id, funcion);
     }
 
@@ -70,7 +71,7 @@ export class Entorno {
         return null;
     }   
 
-    public getFuncion(id: string) : FuncionInstruccion | undefined{
+    public getFuncion(id: string) : FuncionInstruccion | MetodoInstruccion | undefined{
         let env : Entorno | null = this;
         while(env != null){
             if(env.funciones.has(id)){
