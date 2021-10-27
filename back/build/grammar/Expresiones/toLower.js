@@ -10,6 +10,7 @@ class ToLower extends expresion_1.Expresion {
         this.tipoExpresion = 'tolower';
     }
     ejecutar(env) {
+        console.log('Ejecutando tolower');
         const val = this.expresion.ejecutar(env);
         if (val.tipo == retorno_1.Tipo.STRING) {
             return { valor: String(val.valor).toLowerCase(), tipo: retorno_1.Tipo.STRING };

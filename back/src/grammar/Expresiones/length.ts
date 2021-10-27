@@ -7,19 +7,19 @@ export class Length extends Expresion {
     
     public tipoExpresion = 'length';
 
-    constructor(private id: string, linea: number, columna: number) {
+    constructor(private expresion: Expresion, linea: number, columna: number) {
         super(linea, columna);
     }
 
     public ejecutar(env: Entorno): Retorno {
-        if (env.getVar(this.id)) {
-            return {valor: env.getVar(this.id)?.valor.length, tipo: Tipo.STRING};
-        }else if (env.getDynamicList(this.id)) {
-            return {valor: env.getDynamicList(this.id)?.elementos.length, tipo: Tipo.STRING};
-        }else if (env.getVector(this.id)) {
-            return {valor: env.getVector(this.id)?.elementos.length, tipo: Tipo.STRING};
+        console.log('Ejecutando length');
+        const val = this.expresion.ejecutar(env);
+        if (val.tipo === Tipo.STRING) {
+            return {valor: val.valor.length, tipo: Tipo.INT};
+        }else if (val.tipo === Tipo.ARRAY) {
+            return {valor: val.valor.elementos.length, tipo: Tipo.INT};
         }
-        throw new Error_(this.linea, this.columna, 'Sintactico', 'No se encontro la variable');
+        throw new Error_(this.linea, this.columna, 'Sintactico', 'No se puede encontrar la longitud de '+val.valor);
     }
 
 }

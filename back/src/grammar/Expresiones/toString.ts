@@ -13,6 +13,9 @@ export class ToString extends Expresion {
 
     public ejecutar(env: Entorno): Retorno {
         const val = this.valor.ejecutar(env);
+        if (val.tipo !== Tipo.DOUBLE && val.tipo !== Tipo.INT && val.tipo !== Tipo.BOOLEAN && val.tipo !== Tipo.STRING){
+            throw new Error_(this.linea, this.columna, 'Semantico', `No se puede convertir a string tipo ${val.tipo}`);
+        }
         return {valor: `${val.valor}`, tipo: Tipo.STRING};
     }
 

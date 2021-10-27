@@ -20,16 +20,16 @@ class AsignacionVector extends instruccion_1.Instruccion {
         if (pos.tipo !== retorno_1.Tipo.INT) {
             throw new error_1.Error_(this.linea, this.columna, 'Sintactico', 'Posicion invalida.');
         }
-        if (!vec.elementos[Number(pos.valor)]) {
+        if (vec.elementos.length - 1 < pos.valor) {
             throw new error_1.Error_(this.linea, this.columna, 'Sintactico', 'Posicion supera el indice.');
         }
         if (typeof this.valor == 'string') {
         }
         const val = this.valor.ejecutar(env);
         if (val.tipo !== vec.tipo) {
-            throw new error_1.Error_(this.linea, this.columna, 'Sintactico', 'No coinciden los tipos de datos.');
+            throw new error_1.Error_(this.linea, this.columna, 'Sintactico', `No coinciden los tipos de datos para asignar al vector ${vec.id}.`);
         }
-        vec.elementos[Number(pos.valor)] = val.valor;
+        vec.elementos[Number(pos.valor)] = val;
     }
 }
 exports.AsignacionVector = AsignacionVector;

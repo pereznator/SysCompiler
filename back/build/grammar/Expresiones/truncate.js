@@ -10,6 +10,7 @@ class Truncate extends expresion_1.Expresion {
         this.tipoExpresion = 'truncate';
     }
     ejecutar(env) {
+        console.log('Ejecutando truncate');
         const val = this.valor.ejecutar(env);
         if (val.tipo !== retorno_1.Tipo.DOUBLE && val.tipo !== retorno_1.Tipo.INT) {
             throw new error_1.Error_(this.linea, this.columna, 'Semantico', 'Truncate solo acepta valores numericos');

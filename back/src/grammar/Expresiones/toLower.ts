@@ -12,6 +12,7 @@ export class ToLower extends Expresion {
     }
 
     public ejecutar(env: Entorno): Retorno {
+        console.log('Ejecutando tolower');
         const val = this.expresion.ejecutar(env);
         if (val.tipo == Tipo.STRING) {
             return {valor: String(val.valor).toLowerCase(), tipo: Tipo.STRING};

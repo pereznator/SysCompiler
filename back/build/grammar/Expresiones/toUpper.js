@@ -10,8 +10,9 @@ class ToUpper extends expresion_1.Expresion {
         this.tipoExpresion = 'toupper';
     }
     ejecutar(env) {
+        console.log('Ejecutando toupper');
         const val = this.expresion.ejecutar(env);
-        if (val.tipo == retorno_1.Tipo.STRING) {
+        if (val.tipo === retorno_1.Tipo.STRING) {
             return { valor: String(val.valor).toUpperCase(), tipo: retorno_1.Tipo.STRING };
         }
         else {

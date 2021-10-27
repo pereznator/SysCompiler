@@ -12,8 +12,27 @@ export class TypeOf extends Expresion {
     }
 
     public ejecutar(env: Entorno): Retorno {
+        console.log('Ejecutando typeof');
         const val = this.valor.ejecutar(env);
-        return {valor: val.tipo, tipo: Tipo.STRING};
+        if (val.tipo === Tipo.INT) {
+            return {valor: 'int', tipo: Tipo.STRING};
+        }
+        else if (val.tipo === Tipo.DOUBLE) {
+            return {valor: 'double', tipo: Tipo.STRING};
+        }
+        else if (val.tipo === Tipo.STRING) {
+            return {valor: 'string', tipo: Tipo.STRING};
+        }
+        else if (val.tipo === Tipo.CHAR) {
+            return {valor: 'char', tipo: Tipo.STRING};
+        }
+        else if (val.tipo === Tipo.BOOLEAN) {
+            return {valor: 'boolean', tipo: Tipo.STRING};
+        }
+        else if (val.tipo === Tipo.ARRAY) {
+            return {valor: 'array', tipo: Tipo.STRING};
+        }
+        throw new Error_(this.linea, this.columna, 'Semantico', 'No se encontro tipo para la variable '+ val.valor)
     }
 
 }

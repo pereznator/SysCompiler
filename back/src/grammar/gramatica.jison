@@ -12,6 +12,7 @@
     const { MetodoInstruccion } = require('./instrucciones/declaracion-metodo');
     const { Declaracion } = require('./instrucciones/declaracion');
     const { Asignacion } = require('./instrucciones/asignacion');
+    const { AsignacionMultiple } = require('./instrucciones/asignacion-multiple');
     const { Ternario } = require('./instrucciones/ternario');
     const { Casteo } = require('./instrucciones/casteo');
     const { DeclaracionVector } = require('./instrucciones/declaracion-vector');
@@ -77,7 +78,7 @@ id ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*
 "writeline" return "writeline"
 "tolower"   return "tolower"
 "toupper"   return "toupper"
-"lenght"    return "length"
+"length"    return "length"
 "truncate"  return "truncate"
 "round"     return "round"
 "typeof"    return "typeof"
@@ -392,6 +393,26 @@ ASIGNACION:
     {
         $$ = new Asignacion(null, $1, $3, @1.first_line, @1.first_column);
     }
+    | id ',' LISTAIDS '=' EXPRESION
+    {
+        $3.push($1);
+        $$ = new AsignacionMultiple($3, $5, @1.first_line, @1.first_column);
+    }
+    | id ',' LISTAIDS '=' TERNARIO
+    {
+        $3.push($1);
+        $$ = new AsignacionMultiple($3, $5, @1.first_line, @1.first_column);
+    }
+    | id ',' LISTAIDS '=' LLAMADA
+    {
+        $3.push($1);
+        $$ = new AsignacionMultiple($3, $5, @1.first_line, @1.first_column);
+    }
+    | id ',' LISTAIDS '=' CASTEO
+    {
+        $3.push($1);
+        $$ = new AsignacionMultiple($3, $5, @1.first_line, @1.first_column);
+    }
 ;
 
 TERNARIO:
@@ -417,6 +438,10 @@ DECVECTOR:
     {
         $$ = new DeclaracionVector($1, $2, null, $7, @1.first_line, @1.first_column);
     }
+    | TIPOSDATOS id '[' ']' ';'
+    {
+        $$ = new DeclaracionVector($1, $2, null, null, @1.first_line, @1.first_column);
+    }
 ;
 
 ASIGNACIONVECTOR:
@@ -429,11 +454,11 @@ ASIGNACIONVECTOR:
 DECDYNAMICLIST:
     'dynamiclist' '<' TIPOSDATOS '>' id '=' 'new' 'dynamiclist' '<' TIPOSDATOS '>' ';'
     {
-        $$ = new DeclaracionDynamic($3, $5, null, @1.first_line, @1.first_column);
+        $$ = new DeclaracionDynamic($3, $10, $5, null, @1.first_line, @1.first_column);
     }
     | 'dynamiclist' '<' TIPOSDATOS '>' id '=' EXPRESION ';'
     {
-        $$ = new DeclaracionDynamic($3, $5, $7, @1.first_line, @1.first_column);
+        $$ = new DeclaracionDynamic($3, null, $5, $7, @1.first_line, @1.first_column);
     }
 ;
 
@@ -655,7 +680,7 @@ VALOR:
     {
         $$ = new ToUpper($3, @1.first_line, @1.first_column);
     }
-    | 'length' '(' id ')'
+    | 'length' '(' EXPRESION ')'
     {
         $$ = new Length($3, @1.first_line, @1.first_column);
     }

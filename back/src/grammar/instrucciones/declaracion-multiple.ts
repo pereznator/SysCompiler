@@ -2,6 +2,7 @@ import { Instruccion } from "../abstractas/instruccion";
 import { Entorno } from "../simbolos/entorno";
 import { Expresion } from "../abstractas/expresion";
 import { Tipo } from '../abstractas/retorno';
+import { Error_ } from '../Error/error';
 
 export class DeclaracionMultiple extends Instruccion{
 
@@ -19,6 +20,9 @@ export class DeclaracionMultiple extends Instruccion{
 
     public ejecutar(environment: Entorno) {
         const val = this.value.ejecutar(environment);
+        if (this.tipo !== val.tipo) {
+            throw new Error_(this.linea, this.columna, 'Semantico', `No se puede asignar tipo ${val.tipo} a ${this.tipo}`);
+        }
         for (const id of this.ids) {
             environment.guardar(id, val.valor, val.tipo);
         }

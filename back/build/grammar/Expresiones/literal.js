@@ -14,9 +14,9 @@ class Literal extends expresion_1.Expresion {
         else if (this.tipo == 1)
             return { valor: Number(this.valor), tipo: retorno_1.Tipo.DOUBLE };
         else if (this.tipo == 2)
-            return { valor: this.valor.replace('"', ''), tipo: retorno_1.Tipo.STRING };
+            return { valor: this.valor.split('"').join(''), tipo: retorno_1.Tipo.STRING };
         else if (this.tipo == 3)
-            return { valor: this.valor.replace("'", ""), tipo: retorno_1.Tipo.CHAR };
+            return { valor: this.valor.split("'").join(""), tipo: retorno_1.Tipo.CHAR };
         else if (this.tipo == 4) {
             if (this.valor === 'false')
                 return { valor: false, tipo: retorno_1.Tipo.BOOLEAN };

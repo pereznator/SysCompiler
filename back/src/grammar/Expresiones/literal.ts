@@ -13,9 +13,9 @@ export class Literal extends Expresion{
         else if(this.tipo == 1)
             return {valor : Number(this.valor), tipo : Tipo.DOUBLE};
         else if(this.tipo == 2)
-            return {valor : this.valor.replace('"', ''), tipo : Tipo.STRING};
+            return {valor : this.valor.split('"').join(''), tipo : Tipo.STRING};
         else if(this.tipo == 3)
-            return {valor : this.valor.replace("'", ""), tipo : Tipo.CHAR};
+            return {valor : this.valor.split("'").join(""), tipo : Tipo.CHAR};
         else if(this.tipo == 4){
             if (this.valor === 'false')
                 return {valor : false, tipo : Tipo.BOOLEAN};

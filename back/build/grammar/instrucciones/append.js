@@ -10,14 +10,16 @@ class AppendInstruccion extends instruccion_1.Instruccion {
         this.tipoInstruccion = 'append';
     }
     ejecutar(env) {
+        console.log('Ejecutando append');
         const val = this.expresion.ejecutar(env);
         let dymList = env.getDynamicList(this.id);
-        if (dymList) {
-            dymList.elementos.push(val);
+        if (!dymList) {
+            throw new error_1.Error_(this.linea, this.columna, 'Semantico', `No se encontro DynamicList con id '${this.id}'`);
         }
-        else {
-            throw new error_1.Error_(this.linea, this.columna, 'Semantico', `No se encontro DynamicList con id ${this.id}`);
+        if (val.tipo !== dymList.tipo) {
+            throw new error_1.Error_(this.linea, this.columna, 'Semantico', `Tipos incompatibles para append en DynamicList con id '${this.id}'`);
         }
+        dymList.elementos.push(val);
     }
 }
 exports.AppendInstruccion = AppendInstruccion;

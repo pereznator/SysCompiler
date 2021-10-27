@@ -13,12 +13,9 @@ export class WriteLine extends Instruccion {
 
     public ejecutar(env: Entorno) {
         console.log('Ejecutando writeline');
-        try {
-            const exp = this.expresion.ejecutar(env);
-            console.log(exp);
-        }catch (err) {
-            console.log(err);
-            throw new Error_(this.linea, this.columna, 'Semantico', 'No se pudo ejecutar writeline.');
-        }
+        
+        const exp = this.expresion.ejecutar(env);
+        console.log(exp);
+        
     }
 }

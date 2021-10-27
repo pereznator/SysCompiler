@@ -18,8 +18,6 @@ class AppController {
         let status;
         let contenido;
         let entorno;
-        const prueba = 'a' + 10;
-        console.log(typeof prueba);
         try{
             contenido = parser.parse(data);
             status = 200;

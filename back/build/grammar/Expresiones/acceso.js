@@ -1,16 +1,32 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const expresion_1 = require("../abstractas/expresion");
+const retorno_1 = require("../abstractas/retorno");
 class Acceso extends expresion_1.Expresion {
     constructor(id, line, column) {
         super(line, column);
         this.id = id;
     }
     ejecutar(environment) {
-        const value = environment.getVar(this.id);
-        if (value == null || value == undefined)
-            throw new Error("La variable no existe");
-        return { valor: value.valor, tipo: value.tipo };
+        let value;
+        value = environment.getVar(this.id);
+        if (value) {
+            return { valor: value.valor, tipo: value.tipo };
+        }
+        value = environment.getFuncion(this.id);
+        if (value) {
+            const val = value.ejecutar(environment);
+            return { valor: val.valor, tipo: val.tipo };
+        }
+        value = environment.getVector(this.id);
+        if (value) {
+            return { valor: value, tipo: retorno_1.Tipo.ARRAY };
+        }
+        value = environment.getDynamicList(this.id);
+        if (value) {
+            return { valor: value, tipo: retorno_1.Tipo.ARRAY };
+        }
+        throw new Error("La variable no existe");
     }
 }
 exports.Acceso = Acceso;

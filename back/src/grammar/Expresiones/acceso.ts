@@ -1,6 +1,6 @@
 import { Expresion } from "../abstractas/expresion";
 import { Entorno } from "../simbolos/entorno";
-import { Retorno } from "../abstractas/retorno";
+import { Retorno, Tipo } from "../abstractas/retorno";
 
 export class Acceso extends Expresion{
 
@@ -9,9 +9,25 @@ export class Acceso extends Expresion{
     }
 
     public ejecutar(environment: Entorno): Retorno {
-        const value = environment.getVar(this.id);
-        if(value == null || value == undefined)
-            throw new Error("La variable no existe");
-        return {valor : value.valor, tipo : value.tipo};
+        let value;
+        value = environment.getVar(this.id);
+        if (value) {
+            return {valor : value.valor, tipo : value.tipo};
+        }
+        value = environment.getFuncion(this.id);
+        if (value) {
+            const val = value.ejecutar(environment);
+            return {valor: val.valor, tipo: val.tipo};
+        }
+        value = environment.getVector(this.id);
+        if (value) {
+            return {valor: value, tipo: Tipo.ARRAY};
+        }
+        value = environment.getDynamicList(this.id);
+        if (value) {
+            return {valor: value, tipo: Tipo.ARRAY}
+        }
+        throw new Error("La variable no existe");
+
     }
 }

@@ -12,8 +12,9 @@ export class ToUpper extends Expresion {
     }
 
     public ejecutar(env: Entorno): Retorno {
+        console.log('Ejecutando toupper');
         const val = this.expresion.ejecutar(env);
-        if (val.tipo == Tipo.STRING) {
+        if (val.tipo === Tipo.STRING) {
             return {valor: String(val.valor).toUpperCase(), tipo: Tipo.STRING};
         }else {
             throw new Error_(this.linea, this.columna, 'Semantico', 'No se pudo convertir a minusculas');
