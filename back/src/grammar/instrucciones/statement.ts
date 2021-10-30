@@ -9,12 +9,12 @@ export class Statement extends Instruccion{
         super(line, column);
     }
 
-    public ejecutar(env : Entorno) {
+    public ejecutar(env : Entorno): any {
         const newEnv = new Entorno(env);
         for(const instr of this.code){
             try {
                 const element = instr.ejecutar(newEnv);
-                if(element != undefined || element != null){
+                if(element != undefined && element != null){
                     return element;                
                 }
             } catch (error) {

@@ -2,6 +2,7 @@ import { Instruccion } from "../abstractas/instruccion";
 import { Expresion } from "../abstractas/expresion";
 import { Entorno } from "../simbolos/entorno";
 import { Tipo } from "../abstractas/retorno";
+import { Error_ } from '../Error/error';
 
 export class WhileInstruccion extends Instruccion{
 
@@ -12,26 +13,30 @@ export class WhileInstruccion extends Instruccion{
     }
 
     public ejecutar(env : Entorno) {
+        console.log('ejecutando while');
         let condition = this.condition.ejecutar(env);
         if (condition.tipo != Tipo.BOOLEAN) {
             throw {error: "La condicion no es booleana", linea: this.linea, columna : this.columna};
         }
         while(condition.valor == true){
             const element = this.code.ejecutar(env);
-            if(element != null || element != undefined){
-                console.log(element);
-                if(element.type == 'Break')
+            if(element != null && element != undefined){
+                if(element.tipoInstruccion == 'break'){
                     break;
-                else if(element.type == 'Continue'){
+                }
+                else if(element.tipoInstruccion == 'continue'){
                     condition = this.condition.ejecutar(env);
                     continue;
+                }else if (element.tipoInstruccion == 'return') {
+                    break;
                 }
-                else
+                else{
                     return element;
+                }
             }
             condition = this.condition.ejecutar(env);
             if(condition.tipo != Tipo.BOOLEAN){
-                throw {error: "La condicion no es booleana", linea: this.linea, columna : this.columna};
+                throw new Error_(this.linea, this.columna, 'Semantico', `No se`);
             }
         }
     }

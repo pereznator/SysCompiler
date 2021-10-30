@@ -24,8 +24,8 @@ export class ExpresionLogica extends Expresion{
 
         const leftValue = this.left.ejecutar(environment);
         let rightValue;
-        if (rightValue == null){
-            console.log('rightvalue');
+        if (this.right == null){
+            console.log('rightvalue es null');
             rightValue = leftValue;
         }else {
             rightValue = this.right.ejecutar(environment);

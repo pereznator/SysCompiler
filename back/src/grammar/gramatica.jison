@@ -23,6 +23,9 @@
     const { AppendInstruccion } = require("./instrucciones/append");
     const { SetValue } = require("./instrucciones/setValue");
     const { StartWith } = require("./instrucciones/startWith");
+    const { Break } = require("./instrucciones/break");
+    const { Continue } = require("./instrucciones/continue");
+    const { Return } = require("./instrucciones/return");
 
     const { Aritmetica, OperacionAritmetica } = require('./Expresiones/aritmetica');
     const { Relacional, OpcionRelacional } = require('./Expresiones/relacional');
@@ -44,7 +47,8 @@
 
     
     const { Error_ } = require('./Error/error');
-    const { errores } = require('./Error/errores');
+
+    let errores = [];
 %}
 
 %lex
@@ -128,8 +132,8 @@ id ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*
 {cadena}    return "cadena"
 {caracter}  return "caracter"
 <<EOF>>     return "EOF"
-.           {console.log('[ERROR LEXICO]: ' + yytext + ', ' + yylloc.first_line + ', ' +  yylloc.column);
-                errores.push(new Error_(yylloc.first_line, yylloc.column, 'Lexico', yytext));
+.           {console.log('[ERROR LEXICO]: ' + yytext + ', ' + yylloc.first_line + ', ' +  yylloc.first_column);
+                errores.push(new Error_(yylloc.first_line, yylloc.first_column, 'Lexico', yytext));
             }
 
 /lex
@@ -149,7 +153,7 @@ id ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*
 INIT:
     INSTRUCCIONES EOF
     {
-        return $1;
+        return {contenido: $1, errores: errores};
     }
 ;
 
@@ -286,6 +290,34 @@ SEGMENTO:
     | DECDYNAMICLIST
     | APPEND
     | SETVALUE
+    | BREAK
+    | CONTINUE
+    | RETURN
+;
+
+BREAK:
+    'break' ';'
+    {
+        $$ = new Break(@1.first_line, @1.first_column);
+    }
+;
+
+CONTINUE:
+    'continue' ';'
+    {
+        $$ = new Continue(@1.first_line, @1.first_column);
+    }
+;
+
+RETURN:
+    'return' EXPRESION ';'
+    {
+        $$ = new Return($2, @1.first_line, @1.first_column);
+    }
+    | 'return' ';'
+    {
+        $$ = new Return(null, @1.first_line, @1.first_column);
+    }
 ;
 
 INSIF:
@@ -527,6 +559,10 @@ INSSWITCH:
     'switch' '(' EXPRESION ')' '{' INSCASES INSDEFAULT '}'
     {
         $$ = new SwitchInstruccion($3, $6, $7, @1.first_line, @1.first_column);
+    }
+    | 'switch' '(' EXPRESION ')' '{' INSDEFAULT '}'
+    {
+        $$ = new SwitchInstruccion($3, null, $6, @1.first_line, @1.first_column);
     }
 ;
 

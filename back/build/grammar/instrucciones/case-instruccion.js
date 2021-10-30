@@ -10,7 +10,12 @@ class CaseInstruccion extends instruccion_1.Instruccion {
         this.code = code;
         this.tipoInstruccion = 'case';
     }
-    ejecutar(env) {
+    ejecutar(env, expresion) {
+        console.log('Ejecutando case');
+        const val = this.condicion.ejecutar(env);
+        if (val.valor !== expresion.valor) {
+            return;
+        }
         const newEnv = new entorno_1.Entorno(env);
         for (const instr of this.code) {
             try {

@@ -3,6 +3,7 @@ import { Entorno } from "../simbolos/entorno";
 import { errores } from "../Error/errores";
 import { Error_ } from '../Error/error';
 import { Expresion } from '../abstractas/expresion';
+import { Retorno } from '../abstractas/retorno';
 
 export class CaseInstruccion extends Instruccion{
 
@@ -12,7 +13,12 @@ export class CaseInstruccion extends Instruccion{
         super(line, column);
     }
 
-    public ejecutar(env : Entorno) {
+    public ejecutar(env : Entorno, expresion: Retorno): any {
+        console.log('Ejecutando case');
+        const val = this.condicion.ejecutar(env);
+        if (val.valor !== expresion.valor) {
+            return;
+        }
         const newEnv = new Entorno(env);
         for(const instr of this.code){
             try {

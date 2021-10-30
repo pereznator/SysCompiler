@@ -10,8 +10,9 @@ class ToString extends expresion_1.Expresion {
         this.tipoExpresion = 'tostring';
     }
     ejecutar(env) {
+        console.log('Ejecutando tostring');
         const val = this.valor.ejecutar(env);
-        if (val.tipo !== retorno_1.Tipo.DOUBLE && val.tipo !== retorno_1.Tipo.INT && val.tipo !== retorno_1.Tipo.BOOLEAN && val.tipo !== retorno_1.Tipo.STRING) {
+        if (val.tipo !== retorno_1.Tipo.DOUBLE && val.tipo !== retorno_1.Tipo.INT && val.tipo !== retorno_1.Tipo.BOOLEAN && val.tipo !== retorno_1.Tipo.STRING && val.tipo !== retorno_1.Tipo.CHAR) {
             throw new error_1.Error_(this.linea, this.columna, 'Semantico', `No se puede convertir a string tipo ${val.tipo}`);
         }
         return { valor: `${val.valor}`, tipo: retorno_1.Tipo.STRING };

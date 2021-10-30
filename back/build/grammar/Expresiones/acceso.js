@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const expresion_1 = require("../abstractas/expresion");
 const retorno_1 = require("../abstractas/retorno");
+const error_1 = require("../Error/error");
 class Acceso extends expresion_1.Expresion {
     constructor(id, line, column) {
         super(line, column);
@@ -26,7 +27,7 @@ class Acceso extends expresion_1.Expresion {
         if (value) {
             return { valor: value, tipo: retorno_1.Tipo.ARRAY };
         }
-        throw new Error("La variable no existe");
+        throw new error_1.Error_(this.linea, this.columna, 'Semantico', `No se encontro la variable '${this.id}'`);
     }
 }
 exports.Acceso = Acceso;

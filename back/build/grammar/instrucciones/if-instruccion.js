@@ -11,7 +11,7 @@ class IfInstruccion extends instruccion_1.Instruccion {
         this.tipoInstruccion = 'if';
     }
     ejecutar(ent) {
-        var _a;
+        console.log('ejecutando if');
         const condicion = this.condicion.ejecutar(ent);
         if (condicion.tipo != retorno_1.Tipo.BOOLEAN) {
             throw { error: "La condicion no es booleana", linea: this.linea, columna: this.columna };
@@ -20,7 +20,9 @@ class IfInstruccion extends instruccion_1.Instruccion {
             return this.contenido.ejecutar(ent);
         }
         else {
-            return (_a = this.insElse) === null || _a === void 0 ? void 0 : _a.ejecutar(ent);
+            if (this.insElse) {
+                return this.insElse.ejecutar(ent);
+            }
         }
     }
 }

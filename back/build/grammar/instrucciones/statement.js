@@ -13,7 +13,7 @@ class Statement extends instruccion_1.Instruccion {
         for (const instr of this.code) {
             try {
                 const element = instr.ejecutar(newEnv);
-                if (element != undefined || element != null) {
+                if (element != undefined && element != null) {
                     return element;
                 }
             }

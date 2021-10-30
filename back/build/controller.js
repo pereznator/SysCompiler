@@ -23,7 +23,9 @@ class AppController {
         let contenido;
         let entorno;
         try {
-            contenido = parser.parse(data);
+            contenido = parser.parse(data).contenido;
+            let erroresLexicos = parser.parse(data).errores;
+            console.log(erroresLexicos);
             status = 200;
             const ent = new entorno_1.Entorno(null);
             while (errores_1.errores.length > 0) {

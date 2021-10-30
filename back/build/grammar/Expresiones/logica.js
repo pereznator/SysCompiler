@@ -21,8 +21,8 @@ class ExpresionLogica extends expresion_1.Expresion {
         console.log('ejecutando expresion logica');
         const leftValue = this.left.ejecutar(environment);
         let rightValue;
-        if (rightValue == null) {
-            console.log('rightvalue');
+        if (this.right == null) {
+            console.log('rightvalue es null');
             rightValue = leftValue;
         }
         else {

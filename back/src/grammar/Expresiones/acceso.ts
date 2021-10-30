@@ -1,6 +1,7 @@
 import { Expresion } from "../abstractas/expresion";
 import { Entorno } from "../simbolos/entorno";
 import { Retorno, Tipo } from "../abstractas/retorno";
+import { Error_ } from '../Error/error';
 
 export class Acceso extends Expresion{
 
@@ -27,7 +28,7 @@ export class Acceso extends Expresion{
         if (value) {
             return {valor: value, tipo: Tipo.ARRAY}
         }
-        throw new Error("La variable no existe");
+        throw new Error_(this.linea, this.columna, 'Semantico', `No se encontro la variable '${this.id}'`);
 
     }
 }
