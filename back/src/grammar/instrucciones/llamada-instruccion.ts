@@ -27,7 +27,7 @@ export class Llamada extends Instruccion{
                 }
                 newEnv.guardar(func.parametros[i].id, value.valor, value.tipo);
             }
-            func.contenido.ejecutar(newEnv);
+            return func.contenido.ejecutar(newEnv);
         }else {
             console.log('No se encontro el metodo');
             throw new Error_(this.linea, this.columna, 'Sintactico', `No se encontro metodo con id ${this.id}`);

@@ -12,6 +12,7 @@ export class Entorno {
     public funciones: Map<string, FuncionInstruccion | MetodoInstruccion>;
     public vectores: Map<String, Vector>;
     public dynamicLists: Map<String, DynamicList>;
+    public salidas: any = [];
 
     constructor(public anterior: Entorno | null) {
         this.variables = new Map();

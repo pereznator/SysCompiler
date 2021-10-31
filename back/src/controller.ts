@@ -18,15 +18,22 @@ class AppController {
         let status;
         let contenido;
         let entorno;
+        let salidas;
         try{
-            contenido = parser.parse(data).contenido;
-            let erroresLexicos = parser.parse(data).errores;
-            console.log(erroresLexicos);
-            status = 200;
-            const ent = new Entorno(null);
+            let datos = parser.parse(data);
+            contenido = datos.contenido;
             while (errores.length > 0) {
                 errores.pop();
             }
+            let erroresLexicos = datos.errores;
+            if (erroresLexicos.length > 0) {
+                console.log('Hay error lexico: '+erroresLexicos);
+                erroresLexicos.forEach((err: Error_) => {
+                    errores.push(err);
+                });
+            }
+            status = 200;
+            const ent = new Entorno(null);
 
             for (const instruccion of contenido) {
                 try {
@@ -41,7 +48,7 @@ class AppController {
             for (const instruccion of contenido) {
                 try {
                     if (instruccion instanceof StartWith) {
-                        instruccion.ejecutar(ent);
+                        let ejecucion = instruccion.ejecutar(ent);
                     }
                 }catch(err) {
                     console.log(err);
@@ -50,14 +57,15 @@ class AppController {
                 }
             }
             entorno = ent;
-
+            console.log(ent.salidas);
+            salidas = ent.salidas;
         }catch(err) {
-            console.log(err);
+            console.log('un errorcito'+err);
             contenido = 'error';
             entorno = null;
             status = 404;
         }
-        res.status(status).json({'contenido': contenido, 'errores': errores, 'entornos': entorno});
+        res.status(status).json({contenido, errores, entorno, salidas});
     }
 }
 

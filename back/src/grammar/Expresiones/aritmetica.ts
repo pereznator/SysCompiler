@@ -35,7 +35,7 @@ export class Aritmetica extends Expresion{
         }
         let result : Retorno;
         if (!rightValue || !leftValue) {
-            throw new Error_(this.linea, this.columna, 'Semantico', 'No se pudo ejecutar las dos ');
+            throw new Error_(this.linea, this.columna, 'Semantico', 'Error en la aritmetica.');
         }
 
         if (rightValue.tipo === Tipo.CHAR && (leftValue.tipo === Tipo.INT || leftValue.tipo === Tipo.DOUBLE)) {
@@ -47,8 +47,6 @@ export class Aritmetica extends Expresion{
         }
 
         let tipoDominante;
-        
-        console.log(`Valor izquierdo: ${leftValue.valor} y valor derecho: ${rightValue.valor}`);
         
         if(this.type == OperacionAritmetica.SUMA){
             tipoDominante = this.tipoDominante(leftValue.tipo, rightValue.tipo);

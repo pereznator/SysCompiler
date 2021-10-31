@@ -13,7 +13,7 @@ export class StartWith extends Instruccion {
 
     public ejecutar(env: Entorno) {
         console.log('Start with ejecutandose');
-        this.id.ejecutar(env);
+        return this.id.ejecutar(env);
     }
 
 }

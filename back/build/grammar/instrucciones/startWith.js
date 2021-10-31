@@ -9,7 +9,7 @@ class StartWith extends instruccion_1.Instruccion {
     }
     ejecutar(env) {
         console.log('Start with ejecutandose');
-        this.id.ejecutar(env);
+        return this.id.ejecutar(env);
     }
 }
 exports.StartWith = StartWith;

@@ -39,7 +39,7 @@ class DoWhileInstruccion extends instruccion_1.Instruccion {
                     continue;
                 }
                 else if (element.tipoInstruccion == 'return') {
-                    break;
+                    return element;
                 }
                 else
                     return element;

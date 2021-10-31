@@ -48,7 +48,7 @@
     
     const { Error_ } = require('./Error/error');
 
-    let errores = [];
+    let errores = new Array();
 %}
 
 %lex
@@ -132,7 +132,7 @@ id ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*
 {cadena}    return "cadena"
 {caracter}  return "caracter"
 <<EOF>>     return "EOF"
-.           {console.log('[ERROR LEXICO]: ' + yytext + ', ' + yylloc.first_line + ', ' +  yylloc.first_column);
+.           {
                 errores.push(new Error_(yylloc.first_line, yylloc.first_column, 'Lexico', yytext));
             }
 
@@ -185,18 +185,18 @@ INSTRUCCION:
 ;
 
 STRTWITH:
-    'start' 'with' LLAMADA
+    'start' 'with' LLAMADA ';'
     {
         $$ = new StartWith($3, @1.first_line, @1.first_column);
     }
 ;
 
 LLAMADA:
-    id '(' ')' ';'
+    id '(' ')'
     {
         $$ = new Llamada($1, new Array(), @1.first_line, @1.first_column);
     }
-    | id '(' LISTAEXPRESIONES ')' ';'
+    | id '(' LISTAEXPRESIONES ')'
     {
         $$ = new Llamada($1, $3, @1.first_line, @1.first_column);
     }
@@ -277,8 +277,8 @@ CONTENIDO:
 SEGMENTO: 
     INSIF
     | INSWHILE
-    | LLAMADA
-    | INSDECLARACION ';'
+    | LLAMADA ';'
+    | INSDECLARACION
     | INSFOR
     | INSDOWHILE
     | INSWRITELINE
@@ -349,47 +349,47 @@ INSWHILE:
 ;
 
 INSDECLARACION:
-    TIPOSDATOS id
+    TIPOSDATOS id ';'
     {
         $$ = new Declaracion($1, $2, null, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id ',' LISTAIDS
+    | TIPOSDATOS id ',' LISTAIDS ';'
     {
         $4.push($2);
         $$ = new DeclaracionMultiple($1, $4, null, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id '=' EXPRESION
+    | TIPOSDATOS id '=' EXPRESION ';'
     {
         $$ = new Declaracion($1, $2, $4, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id '=' TERNARIO
+    | TIPOSDATOS id '=' TERNARIO ';'
     {
         $$ = new Declaracion($1, $2, $4, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id '=' CASTEO
+    | TIPOSDATOS id '=' CASTEO ';'
     {
         $$ = new Declaracion($1, $2, $4, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id ',' LISTAIDS '=' EXPRESION
+    | TIPOSDATOS id ',' LISTAIDS '=' EXPRESION ';'
     {
         $4.push($2);
         $$ = new DeclaracionMultiple($1, $4, $6, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id ',' LISTAIDS '=' TERNARIO
+    | TIPOSDATOS id ',' LISTAIDS '=' TERNARIO ';'
     {
         $4.push($2);
         $$ = new DeclaracionMultiple($1, $4, $6, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id ',' LISTAIDS '=' CASTEO
+    | TIPOSDATOS id ',' LISTAIDS '=' CASTEO ';'
     {
         $4.push($2);
         $$ = new DeclaracionMultiple($1, $4, $6, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id '=' LLAMADA
+    | TIPOSDATOS id '=' LLAMADA ';'
     {
         $$ = new Declaracion($1, $2, $4, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id ',' LISTAIDS '=' LLAMADA
+    | TIPOSDATOS id ',' LISTAIDS '=' LLAMADA ';'
     {
         $4.push($2);
         $$ = new DeclaracionMultiple($1, $4, $6, @1.first_line, @1.first_column);
@@ -417,7 +417,7 @@ ASIGNACION:
     {
         $$ = new Asignacion(null, $1, $3, @1.first_line, @1.first_column);
     }
-    | id '=' LLAMADA
+    | id '=' LLAMADA ';'
     {
         $$ = new Asignacion(null, $1, $3, @1.first_line, @1.first_column);
     }
@@ -435,7 +435,7 @@ ASIGNACION:
         $3.push($1);
         $$ = new AsignacionMultiple($3, $5, @1.first_line, @1.first_column);
     }
-    | id ',' LISTAIDS '=' LLAMADA
+    | id ',' LISTAIDS '=' LLAMADA ';'
     {
         $3.push($1);
         $$ = new AsignacionMultiple($3, $5, @1.first_line, @1.first_column);

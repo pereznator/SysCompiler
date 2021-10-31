@@ -15,7 +15,7 @@ export class Statement extends Instruccion{
             try {
                 const element = instr.ejecutar(newEnv);
                 if(element != undefined && element != null){
-                    return element;                
+                    return element;
                 }
             } catch (error) {
                 const err = error as Error_;

@@ -25,10 +25,9 @@ export class WhileInstruccion extends Instruccion{
                     break;
                 }
                 else if(element.tipoInstruccion == 'continue'){
-                    condition = this.condition.ejecutar(env);
                     continue;
                 }else if (element.tipoInstruccion == 'return') {
-                    break;
+                    return element;
                 }
                 else{
                     return element;

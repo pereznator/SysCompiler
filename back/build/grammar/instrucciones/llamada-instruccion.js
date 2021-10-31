@@ -26,7 +26,7 @@ class Llamada extends instruccion_1.Instruccion {
                 }
                 newEnv.guardar(func.parametros[i].id, value.valor, value.tipo);
             }
-            func.contenido.ejecutar(newEnv);
+            return func.contenido.ejecutar(newEnv);
         }
         else {
             console.log('No se encontro el metodo');

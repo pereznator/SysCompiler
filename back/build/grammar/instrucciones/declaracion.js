@@ -12,6 +12,9 @@ class Declaracion extends instruccion_1.Instruccion {
     }
     ejecutar(environment) {
         console.log('ejecutando declaracion');
+        if (environment.getVar(this.id) !== null && environment.getVar(this.id) !== undefined) {
+            throw new error_1.Error_(this.linea, this.columna, 'Semantico', `Ya existe una variable con id '${this.id}'`);
+        }
         if (this.value !== null) {
             const val = this.value.ejecutar(environment);
             if (this.tipo !== val.tipo) {

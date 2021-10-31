@@ -4,6 +4,7 @@ const simbolo_1 = require("./simbolo");
 class Entorno {
     constructor(anterior) {
         this.anterior = anterior;
+        this.salidas = [];
         this.variables = new Map();
         this.funciones = new Map();
         this.vectores = new Map();

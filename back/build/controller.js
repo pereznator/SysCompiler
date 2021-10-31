@@ -22,15 +22,22 @@ class AppController {
         let status;
         let contenido;
         let entorno;
+        let salidas;
         try {
-            contenido = parser.parse(data).contenido;
-            let erroresLexicos = parser.parse(data).errores;
-            console.log(erroresLexicos);
-            status = 200;
-            const ent = new entorno_1.Entorno(null);
+            let datos = parser.parse(data);
+            contenido = datos.contenido;
             while (errores_1.errores.length > 0) {
                 errores_1.errores.pop();
             }
+            let erroresLexicos = datos.errores;
+            if (erroresLexicos.length > 0) {
+                console.log('Hay error lexico: ' + erroresLexicos);
+                erroresLexicos.forEach((err) => {
+                    errores_1.errores.push(err);
+                });
+            }
+            status = 200;
+            const ent = new entorno_1.Entorno(null);
             for (const instruccion of contenido) {
                 try {
                     if (instruccion instanceof funcion_instruccion_1.FuncionInstruccion || instruccion instanceof declaracion_metodo_1.MetodoInstruccion) {
@@ -45,7 +52,7 @@ class AppController {
             for (const instruccion of contenido) {
                 try {
                     if (instruccion instanceof startWith_1.StartWith) {
-                        instruccion.ejecutar(ent);
+                        let ejecucion = instruccion.ejecutar(ent);
                     }
                 }
                 catch (err) {
@@ -55,14 +62,16 @@ class AppController {
                 }
             }
             entorno = ent;
+            console.log(ent.salidas);
+            salidas = ent.salidas;
         }
         catch (err) {
-            console.log(err);
+            console.log('un errorcito' + err);
             contenido = 'error';
             entorno = null;
             status = 404;
         }
-        res.status(status).json({ 'contenido': contenido, 'errores': errores_1.errores, 'entornos': entorno });
+        res.status(status).json({ contenido, errores: errores_1.errores, entorno, salidas });
     }
 }
 exports.cont = new AppController();

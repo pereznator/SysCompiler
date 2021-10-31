@@ -39,7 +39,7 @@ export class DoWhileInstruccion extends Instruccion{
                     condition = this.condition.ejecutar(env);
                     continue;
                 }else if (element.tipoInstruccion == 'return') {
-                    break;
+                    return element;
                 }
                 else
                     return element;
