@@ -58,10 +58,13 @@ decimal {numero}"."{numero}
 cadena (\"[^"]*\")
 caracter (\'[^']\')
 id ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*
+comentarioMulti ("/"\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*"/")
+comentarioLineal ("/""/".*)
 
 %%
 \s+         /* Ignorar espacios en blanco */
-
+{comentarioLineal} { /* ignorar */ }
+{comentarioMulti}  { /* ignorar */ }
 "int"       return "int"
 "double"    return "double"
 "boolean"   return "boolean"
@@ -229,7 +232,7 @@ DECFUNCION:
 DECMETODO:
     'void' id '(' ')' STATEMENT
     {
-        $$ = new MetodoInstruccion($2, $5, null, @1.first_line, @1.first_column);
+        $$ = new MetodoInstruccion($2, $5, new Array(), @1.first_line, @1.first_column);
     }
     | 'void' id '(' DEFPARAMETROS ')' STATEMENT
     {
@@ -247,6 +250,11 @@ DEFPARAMETROS:
     {
         $$ = [new Declaracion($1, $2, null, @1.first_line, @1.first_column)];
     }
+    | DECDYNAMICLIST
+    {
+        $$ = [$1]
+    }
+    
 ;
 
 
@@ -287,7 +295,7 @@ SEGMENTO:
     | ACTUALIZACION ';'
     | DECVECTOR
     | ASIGNACIONVECTOR
-    | DECDYNAMICLIST
+    | DECDYNAMICLIST ';'
     | APPEND
     | SETVALUE
     | BREAK
@@ -385,7 +393,7 @@ INSDECLARACION:
         $4.push($2);
         $$ = new DeclaracionMultiple($1, $4, $6, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id '=' LLAMADA ';'
+    /*| TIPOSDATOS id '=' LLAMADA ';'
     {
         $$ = new Declaracion($1, $2, $4, @1.first_line, @1.first_column);
     }
@@ -393,7 +401,7 @@ INSDECLARACION:
     {
         $4.push($2);
         $$ = new DeclaracionMultiple($1, $4, $6, @1.first_line, @1.first_column);
-    }
+    }*/
 ;
 
 LISTAIDS:
@@ -417,10 +425,10 @@ ASIGNACION:
     {
         $$ = new Asignacion(null, $1, $3, @1.first_line, @1.first_column);
     }
-    | id '=' LLAMADA ';'
+    /*| id '=' LLAMADA ';'
     {
         $$ = new Asignacion(null, $1, $3, @1.first_line, @1.first_column);
-    }
+    }*/
     | id '=' CASTEO
     {
         $$ = new Asignacion(null, $1, $3, @1.first_line, @1.first_column);
@@ -435,11 +443,11 @@ ASIGNACION:
         $3.push($1);
         $$ = new AsignacionMultiple($3, $5, @1.first_line, @1.first_column);
     }
-    | id ',' LISTAIDS '=' LLAMADA ';'
+    /*| id ',' LISTAIDS '=' LLAMADA ';'
     {
         $3.push($1);
         $$ = new AsignacionMultiple($3, $5, @1.first_line, @1.first_column);
-    }
+    }*/
     | id ',' LISTAIDS '=' CASTEO
     {
         $3.push($1);
@@ -484,13 +492,17 @@ ASIGNACIONVECTOR:
 ;
 
 DECDYNAMICLIST:
-    'dynamiclist' '<' TIPOSDATOS '>' id '=' 'new' 'dynamiclist' '<' TIPOSDATOS '>' ';'
+    'dynamiclist' '<' TIPOSDATOS '>' id '=' 'new' 'dynamiclist' '<' TIPOSDATOS '>' 
     {
         $$ = new DeclaracionDynamic($3, $10, $5, null, @1.first_line, @1.first_column);
     }
-    | 'dynamiclist' '<' TIPOSDATOS '>' id '=' EXPRESION ';'
+    | 'dynamiclist' '<' TIPOSDATOS '>' id '=' EXPRESION 
     {
         $$ = new DeclaracionDynamic($3, null, $5, $7, @1.first_line, @1.first_column);
+    }
+    | 'dynamiclist' '<' TIPOSDATOS '>' id 
+    {
+        $$ = new DeclaracionDynamic($3, null, $5, null, @1.first_line, @1.first_column);
     }
 ;
 
@@ -513,7 +525,7 @@ FORINICIO:
     {
         $$ = $1
     }
-    | ASIGNACION
+    | ASIGNACION ';'
     {
         $$ = $1
     }
@@ -531,9 +543,9 @@ FORFINAL:
 ;
 
 INSFOR:
-    'for' '(' FORINICIO ';' EXPRESION ';' FORFINAL ')' STATEMENT
+    'for' '(' FORINICIO EXPRESION ';' FORFINAL ')' STATEMENT
     {
-        $$ = new ForInstruccion($3, $5, $7, $9, @1.first_line, @1.first_column);
+        $$ = new ForInstruccion($3, $4, $6, $8, @1.first_line, @1.first_column);
     }  
 ;
 
@@ -743,6 +755,10 @@ VALOR:
     | '(' EXPRESION ')'
     {
         $$ = $2;
+    }
+    | LLAMADA
+    {
+        $$ = $1;
     }
 
 ;

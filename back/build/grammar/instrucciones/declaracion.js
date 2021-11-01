@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const instruccion_1 = require("../abstractas/instruccion");
+const retorno_1 = require("../abstractas/retorno");
 const error_1 = require("../Error/error");
 class Declaracion extends instruccion_1.Instruccion {
     constructor(tipo, id, value, line, column) {
@@ -17,12 +18,27 @@ class Declaracion extends instruccion_1.Instruccion {
         }
         if (this.value !== null) {
             const val = this.value.ejecutar(environment);
-            if (this.tipo !== val.tipo) {
-                throw new error_1.Error_(this.linea, this.columna, 'Semantico', `No coinciden los valores para declaracion de ${this.id}`);
+            if (val) {
+                if (this.tipo !== val.tipo) {
+                    throw new error_1.Error_(this.linea, this.columna, 'Semantico', `No coinciden los valores para declaracion de '${this.id}'`);
+                }
+                if (this.tipo == retorno_1.Tipo.ARRAY) {
+                    environment.guardarDynamicList(this.id, val);
+                }
+                else {
+                    environment.guardar(this.id, val.valor, val.tipo);
+                }
+                const glob = environment.getGlobal();
+                glob.simbolos.push({ identificador: this.id, tipoVariable: 'variable', tipo: this.tipo, entorno: environment.nombreEntorno, linea: this.linea, columna: this.columna });
+                return;
             }
-            return environment.guardar(this.id, val.valor, val.tipo);
+            else {
+                throw new error_1.Error_(this.linea, this.columna, 'Semantico', `No se pudo asignar a la variable '${this.id}'`);
+            }
         }
         environment.guardar(this.id, null, this.tipo);
+        const glob = environment.getGlobal();
+        glob.simbolos.push({ identificador: this.id, tipoVariable: 'variable', tipo: this.tipo, entorno: environment.nombreEntorno, linea: this.linea, columna: this.columna });
     }
 }
 exports.Declaracion = Declaracion;

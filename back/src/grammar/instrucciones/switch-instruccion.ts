@@ -38,6 +38,7 @@ export class SwitchInstruccion extends Instruccion{
         });
         if (!final) {
             console.log('no hubo break');
+            this.defa.nombreEntorno = 'instruccion switch';
             this.defa.ejecutar(env);
         }
     }

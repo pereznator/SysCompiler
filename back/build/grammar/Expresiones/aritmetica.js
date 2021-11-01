@@ -4,6 +4,7 @@ const expresion_1 = require("../abstractas/expresion");
 const retorno_1 = require("../abstractas/retorno");
 const error_1 = require("../Error/error");
 const acceso_1 = require("./acceso");
+const llamada_instruccion_1 = require("../instrucciones/llamada-instruccion");
 var OperacionAritmetica;
 (function (OperacionAritmetica) {
     OperacionAritmetica[OperacionAritmetica["SUMA"] = 0] = "SUMA";
@@ -23,6 +24,7 @@ class Aritmetica extends expresion_1.Expresion {
         this.tipoExpresion = 'aritmetica';
     }
     ejecutar(environment) {
+        var _a, _b;
         console.log('Ejecutando aritmetica');
         const rightValue = this.verTipoVariable(this.right, environment);
         let leftValue;
@@ -32,6 +34,7 @@ class Aritmetica extends expresion_1.Expresion {
         else {
             leftValue = rightValue;
         }
+        console.log(`Izquierda: ${(_a = leftValue) === null || _a === void 0 ? void 0 : _a.valor}, derecha: ${(_b = rightValue) === null || _b === void 0 ? void 0 : _b.valor}`);
         let result;
         if (!rightValue || !leftValue) {
             throw new error_1.Error_(this.linea, this.columna, 'Semantico', 'Error en la aritmetica.');
@@ -106,8 +109,14 @@ class Aritmetica extends expresion_1.Expresion {
             if (val !== undefined && val !== null) {
                 return { valor: val.valor, tipo: val.tipo };
             }
+            else {
+                throw new error_1.Error_(this.linea, this.columna, 'Semantico', `No se encontro la variable con id '${variable.id}'`);
+            }
         }
         else if (variable instanceof expresion_1.Expresion) {
+            return variable.ejecutar(entorno);
+        }
+        else if (variable instanceof llamada_instruccion_1.Llamada) {
             return variable.ejecutar(entorno);
         }
         return null;

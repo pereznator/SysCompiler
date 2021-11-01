@@ -9,5 +9,5 @@ export abstract class Instruccion {
         this.columna = columna;
     }
 
-    public abstract ejecutar(entorno: Entorno, expresion?: Retorno): any;
+    public abstract ejecutar(entorno: Entorno, expresion?: Retorno, nombre?: string): any;
 }

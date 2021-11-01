@@ -4,6 +4,7 @@ import { errores } from "../Error/errores";
 import { Error_ } from '../Error/error';
 import { Expresion } from '../abstractas/expresion';
 import { Retorno } from '../abstractas/retorno';
+import { Statement } from './statement';
 
 export class CaseInstruccion extends Instruccion{
 
@@ -20,6 +21,7 @@ export class CaseInstruccion extends Instruccion{
             return;
         }
         const newEnv = new Entorno(env);
+        newEnv.nombreEntorno = 'instruccion switch';
         for(const instr of this.code){
             try {
                 const element = instr.ejecutar(newEnv);

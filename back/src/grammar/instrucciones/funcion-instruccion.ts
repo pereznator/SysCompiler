@@ -1,16 +1,22 @@
 import { Instruccion } from '../abstractas/instruccion';
 import { Entorno } from '../simbolos/entorno';
 import { Tipo } from '../abstractas/retorno';
+import { Statement } from './statement';
 
 export class FuncionInstruccion extends Instruccion {
 
     public tipoInstruccion = 'funcion';
 
-    constructor(private id: string, public contenido: Instruccion, public parametros: Array<any>, public tipo: Tipo, linea: number, columna: number) {
+    constructor(public id: string, public contenido: Instruccion, public parametros: Array<any>, public tipo: Tipo, linea: number, columna: number) {
         super(linea, columna);
+        if (contenido instanceof Statement) {
+            contenido.nombreEntorno = `Funcion ${this.id}`;
+        }
     }
 
     public ejecutar(entorno: Entorno): any {
+        console.log('Ejecutando Fucion declaracio');
+        entorno.getGlobal().simbolos.push({identificador: this.id, tipoVariable: 'funcion', tipo: this.tipo, entorno: entorno.nombreEntorno, linea: this.linea, columna: this.columna});
         return entorno.guardarFuncion(this.id, this);
     }
 }

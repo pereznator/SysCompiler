@@ -17,6 +17,7 @@ class CaseInstruccion extends instruccion_1.Instruccion {
             return;
         }
         const newEnv = new entorno_1.Entorno(env);
+        newEnv.nombreEntorno = 'instruccion switch';
         for (const instr of this.code) {
             try {
                 const element = instr.ejecutar(newEnv);

@@ -34,5 +34,7 @@ export class DeclaracionVector extends Instruccion {
             }
         }
         env.guardarVector(this.id, new Vector(this.tipo, this.id, arreglo));
+        const glob = env.getGlobal()
+        glob.simbolos.push({identificador: this.id, tipoVariable: 'vector', tipo: this.tipo, entorno: env.nombreEntorno, linea: this.linea, columna: this.columna});
     }
 }

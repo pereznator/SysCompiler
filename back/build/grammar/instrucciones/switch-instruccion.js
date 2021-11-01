@@ -36,6 +36,7 @@ class SwitchInstruccion extends instruccion_1.Instruccion {
         });
         if (!final) {
             console.log('no hubo break');
+            this.defa.nombreEntorno = 'instruccion switch';
             this.defa.ejecutar(env);
         }
     }

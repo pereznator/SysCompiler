@@ -2,6 +2,7 @@ import { Instruccion } from "../abstractas/instruccion";
 import { Expresion } from "../abstractas/expresion";
 import { Entorno } from "../simbolos/entorno";
 import { Tipo } from "../abstractas/retorno";
+import { Statement } from './statement';
 
 export class IfInstruccion extends Instruccion {
     public tipoInstruccion = 'if';
@@ -20,8 +21,13 @@ export class IfInstruccion extends Instruccion {
         if(condicion.tipo != Tipo.BOOLEAN){
             throw {error: "La condicion no es booleana", linea: this.linea, columna : this.columna};
         }
+        if (this.contenido instanceof Statement) {
+            this.contenido.nombreEntorno = 'instruccion if';
+        }
         if(condicion.valor == true){
-            return this.contenido.ejecutar(ent);
+            let ret = this.contenido.ejecutar(ent);
+            console.log(ret);
+            return ret;
         }
         else{
             if (this.insElse) {

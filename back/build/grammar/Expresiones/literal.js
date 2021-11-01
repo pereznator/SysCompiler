@@ -7,10 +7,12 @@ class Literal extends expresion_1.Expresion {
         super(linea, columna);
         this.valor = valor;
         this.tipo = tipo;
+        this.tipoExpresion = 'Literal';
     }
     ejecutar() {
-        if (this.tipo == 0)
+        if (this.tipo == 0) {
             return { valor: Number(this.valor), tipo: retorno_1.Tipo.INT };
+        }
         else if (this.tipo == 1)
             return { valor: Number(this.valor), tipo: retorno_1.Tipo.DOUBLE };
         else if (this.tipo == 2)

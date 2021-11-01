@@ -5,6 +5,8 @@ class Entorno {
     constructor(anterior) {
         this.anterior = anterior;
         this.salidas = [];
+        this.simbolos = [];
+        this.nombreEntorno = '';
         this.variables = new Map();
         this.funciones = new Map();
         this.vectores = new Map();

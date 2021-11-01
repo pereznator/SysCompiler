@@ -4,6 +4,7 @@ import { Entorno } from "../simbolos/entorno";
 import { Error_ } from "../Error/error";
 import { Simbolo } from '../simbolos/simbolo';
 import { Acceso } from './acceso';
+import { Llamada } from '../instrucciones/llamada-instruccion';
 
 export enum OperacionAritmetica{
     SUMA,
@@ -33,6 +34,7 @@ export class Aritmetica extends Expresion{
         }else {
             leftValue = rightValue;
         }
+        console.log(`Izquierda: ${leftValue?.valor}, derecha: ${rightValue?.valor}`);
         let result : Retorno;
         if (!rightValue || !leftValue) {
             throw new Error_(this.linea, this.columna, 'Semantico', 'Error en la aritmetica.');
@@ -109,8 +111,12 @@ export class Aritmetica extends Expresion{
             const val = entorno.getVar(variable.id);
             if (val !== undefined && val !== null) {
                 return { valor: val.valor, tipo: val.tipo };
+            }else {
+                throw new Error_(this.linea, this.columna, 'Semantico', `No se encontro la variable con id '${variable.id}'`)
             }
         }else if (variable instanceof Expresion) {
+            return variable.ejecutar(entorno);
+        }else if (variable instanceof Llamada) {
             return variable.ejecutar(entorno);
         }
         return null;

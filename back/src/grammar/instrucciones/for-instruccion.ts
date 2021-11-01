@@ -6,6 +6,7 @@ import { Declaracion } from './declaracion';
 import { Actualizacion } from './actualizacion';
 import { Asignacion } from "./asignacion";
 import { Error_ } from '../Error/error';
+import { Statement } from './statement';
 
 export class ForInstruccion extends Instruccion {
 
@@ -22,21 +23,23 @@ export class ForInstruccion extends Instruccion {
     }
 
     public ejecutar(ent: Entorno) {
-        const newEnv = new Entorno(ent);
-        if (this.inicio instanceof Declaracion) {
-            this.inicio.ejecutar(newEnv)
-        }else {
-            this.inicio.ejecutar(ent);
+        if (this.contenido instanceof Statement) {
+            this.contenido.nombreEntorno = 'instruccion for';
         }
-        let condi = this.condicion.ejecutar(newEnv);
+        this.inicio.ejecutar(ent);
+        let condi = this.condicion.ejecutar(ent);
         if (condi.tipo != Tipo.BOOLEAN) {
             throw new Error_(this.linea, this.columna, 'Semantico', `La condicion ${condi.valor} no es booleana`);
         }
 
         while (condi.valor == true) {
-            const cont = this.contenido.ejecutar(newEnv);
-            this.actualizacion.ejecutar(newEnv);
+            const cont = this.contenido.ejecutar(ent);
+            this.actualizacion.ejecutar(ent);
             if (cont !== null && cont !== undefined) {
+                if (cont.valor) {
+                    console.log('[contenido]'+cont);
+                    return cont;
+                }
                 if (cont.tipoInstruccion == 'break') {
                     break;
                 } else if (cont.tipoInstruccion == 'continue') {
@@ -45,7 +48,7 @@ export class ForInstruccion extends Instruccion {
                     break;
                 }
             }
-            condi = this.condicion.ejecutar(newEnv);
+            condi = this.condicion.ejecutar(ent);
             if (condi.tipo != Tipo.BOOLEAN) {
                 throw new Error_(this.linea, this.columna, 'Semantico', `La condicion ${condi.valor} no es booleana`);
             }

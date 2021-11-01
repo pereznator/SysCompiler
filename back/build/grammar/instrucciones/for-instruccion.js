@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const instruccion_1 = require("../abstractas/instruccion");
-const entorno_1 = require("../simbolos/entorno");
 const retorno_1 = require("../abstractas/retorno");
-const declaracion_1 = require("./declaracion");
 const error_1 = require("../Error/error");
+const statement_1 = require("./statement");
 class ForInstruccion extends instruccion_1.Instruccion {
     constructor(inicio, condicion, actualizacion, contenido, linea, columna) {
         super(linea, columna);
@@ -15,21 +14,22 @@ class ForInstruccion extends instruccion_1.Instruccion {
         this.tipoInstruccion = 'for';
     }
     ejecutar(ent) {
-        const newEnv = new entorno_1.Entorno(ent);
-        if (this.inicio instanceof declaracion_1.Declaracion) {
-            this.inicio.ejecutar(newEnv);
+        if (this.contenido instanceof statement_1.Statement) {
+            this.contenido.nombreEntorno = 'instruccion for';
         }
-        else {
-            this.inicio.ejecutar(ent);
-        }
-        let condi = this.condicion.ejecutar(newEnv);
+        this.inicio.ejecutar(ent);
+        let condi = this.condicion.ejecutar(ent);
         if (condi.tipo != retorno_1.Tipo.BOOLEAN) {
             throw new error_1.Error_(this.linea, this.columna, 'Semantico', `La condicion ${condi.valor} no es booleana`);
         }
         while (condi.valor == true) {
-            const cont = this.contenido.ejecutar(newEnv);
-            this.actualizacion.ejecutar(newEnv);
+            const cont = this.contenido.ejecutar(ent);
+            this.actualizacion.ejecutar(ent);
             if (cont !== null && cont !== undefined) {
+                if (cont.valor) {
+                    console.log('[contenido]' + cont);
+                    return cont;
+                }
                 if (cont.tipoInstruccion == 'break') {
                     break;
                 }
@@ -40,7 +40,7 @@ class ForInstruccion extends instruccion_1.Instruccion {
                     break;
                 }
             }
-            condi = this.condicion.ejecutar(newEnv);
+            condi = this.condicion.ejecutar(ent);
             if (condi.tipo != retorno_1.Tipo.BOOLEAN) {
                 throw new error_1.Error_(this.linea, this.columna, 'Semantico', `La condicion ${condi.valor} no es booleana`);
             }

@@ -13,6 +13,8 @@ export class Entorno {
     public vectores: Map<String, Vector>;
     public dynamicLists: Map<String, DynamicList>;
     public salidas: any = [];
+    public simbolos: any[] = [];
+    public nombreEntorno = '';
 
     constructor(public anterior: Entorno | null) {
         this.variables = new Map();

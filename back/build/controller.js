@@ -23,6 +23,7 @@ class AppController {
         let contenido;
         let entorno;
         let salidas;
+        let simbolos;
         try {
             let datos = parser.parse(data);
             contenido = datos.contenido;
@@ -62,8 +63,8 @@ class AppController {
                 }
             }
             entorno = ent;
-            console.log(ent.salidas);
             salidas = ent.salidas;
+            simbolos = ent.simbolos;
         }
         catch (err) {
             console.log('un errorcito' + err);
@@ -71,7 +72,7 @@ class AppController {
             entorno = null;
             status = 404;
         }
-        res.status(status).json({ contenido, errores: errores_1.errores, entorno, salidas });
+        res.status(status).json({ contenido, errores: errores_1.errores, entorno, salidas, simbolos });
     }
 }
 exports.cont = new AppController();

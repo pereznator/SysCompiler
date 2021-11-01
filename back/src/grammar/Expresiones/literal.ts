@@ -3,13 +3,16 @@ import { Retorno, Tipo } from "../abstractas/retorno";
 
 export class Literal extends Expresion{
     
+    public tipoExpresion = 'Literal';
+
     constructor(private valor : any, linea : number, columna: number, private tipo : Tipo){
         super(linea, columna);
     }
 
     public ejecutar() : Retorno{
-        if (this.tipo == 0) 
-            return {valor: Number(this.valor), tipo: Tipo.INT}
+        if (this.tipo == 0) {
+            return {valor: Number(this.valor), tipo: Tipo.INT};
+        }
         else if(this.tipo == 1)
             return {valor : Number(this.valor), tipo : Tipo.DOUBLE};
         else if(this.tipo == 2)
