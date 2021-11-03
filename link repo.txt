@@ -1,1 +1,5 @@
 https://github.com/erflod5/OLC2_B-/tree/master/Olmeca
+
+lalr
+lr1
+lr2

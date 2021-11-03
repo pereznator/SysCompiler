@@ -1,0 +1,213 @@
+
+S: INSTRUCCIONES
+
+
+INSTRUCCIONES: INSTRUCCIONES INSTRUCCION 
+            | INSTRUCCION
+
+
+INSTRUCCION: STRTWITH
+            | DECFUNCION
+            | DECMETODO
+
+
+STRTWITH: 'start' 'with' LLAMADA ';'
+
+
+LLAMADA: id '(' ')'
+        | id '(' LISTAEXPRESIONES ')'
+
+
+LISTAEXPRESIONES: LISTAEXPRESIONES ',' EXPRESION
+                | EXPRESION
+
+
+DECFUNCION: TIPOSDATOS id '(' ')' SECCION
+        | TIPOSDATOS id '(' DEFPARAMETROS ')' SECCION
+
+
+DECMETODO: 'void' id '(' ')' SECCION
+        | 'void' id '(' DEFPARAMETROS ')' SECCION
+
+
+DEFPARAMETROS: DEFPARAMETROS ',' TIPOSDATOS id
+            | TIPOSDATOS id
+            | DECDYNAMICLIST
+
+
+SECCION: '{' CONTENIDO '}'
+        | '{' '}'
+
+
+CONTENIDO: CONTENIDO SEGMENTO
+    | SEGMENTO
+
+
+SEGMENTO: 
+    INSIF
+    | INSWHILE
+    | LLAMADA ';'
+    | INSDECLARACION
+    | INSFOR
+    | INSDOWHILE
+    | INSWRITELINE
+    | INSSWITCH
+    | ASIGNACION ';'
+    | ACTUALIZACION ';'
+    | DECVECTOR
+    | ASIGNACIONVECTOR
+    | DECDYNAMICLIST ';'
+    | APPEND
+    | SETVALUE
+    | BREAK
+    | CONTINUE
+    | RETURN
+
+
+BREAK: 'break' ';'
+
+
+CONTINUE: 'continue' ';'
+
+
+RETURN: 'return' EXPRESION ';'
+    | 'return' ';'
+
+
+INSIF: 'if' '(' EXPRESION ')' SECCION INSELSE
+
+
+INSELSE: 'else' SECCION 
+        | 'else' INSIF 
+        | epsilon
+
+
+INSWHILE: 'while' '(' EXPRESION ')' SECCION
+
+
+INSDECLARACION: TIPOSDATOS id ';'
+            | TIPOSDATOS id ',' LISTAIDS ';'
+            | TIPOSDATOS id '=' EXPRESION ';'
+            | TIPOSDATOS id '=' TERNARIO ';'
+            | TIPOSDATOS id '=' CASTEO ';'
+            | TIPOSDATOS id ',' LISTAIDS '=' EXPRESION ';'
+            | TIPOSDATOS id ',' LISTAIDS '=' TERNARIO ';'
+            | TIPOSDATOS id ',' LISTAIDS '=' CASTEO ';'
+
+
+LISTAIDS: LISTAIDS ',' id
+        | id
+
+
+ASIGNACION: id '=' EXPRESION
+        | id '=' TERNARIO
+        | id '=' CASTEO
+        | id ',' LISTAIDS '=' EXPRESION
+        | id ',' LISTAIDS '=' TERNARIO
+        | id ',' LISTAIDS '=' CASTEO
+
+
+TERNARIO: EXPRESION '?' EXPRESION ':' EXPRESION
+
+
+CASTEO: '(' TIPOSDATOS ')' EXPRESION
+
+
+DECVECTOR: TIPOSDATOS id '[' ']' '=' 'new' TIPOSDATOS '[' EXPRESION ']' ';'
+        | TIPOSDATOS id '[' ']' '=' '{' LISTAEXPRESIONES '}' ';'
+        | TIPOSDATOS id '[' ']' ';'
+
+
+ASIGNACIONVECTOR: id '[' EXPRESION ']' '=' EXPRESION ';'
+
+
+DECDYNAMICLIST: 'dynamiclist' '<' TIPOSDATOS '>' id '=' 'new' 'dynamiclist' '<' TIPOSDATOS '>' 
+            | 'dynamiclist' '<' TIPOSDATOS '>' id '=' EXPRESION 
+            | 'dynamiclist' '<' TIPOSDATOS '>' id 
+
+
+APPEND: 'append' '(' id ',' EXPRESION ')' ';'
+
+
+SETVALUE: 'setvalue' '(' id ',' EXPRESION ',' EXPRESION ')' ';'
+
+
+FORINICIO: INSDECLARACION
+        | ASIGNACION ';'
+
+
+FORFINAL: ASIGNACION
+        | ACTUALIZACION
+
+
+INSFOR: 'for' '(' FORINICIO EXPRESION ';' FORFINAL ')' SECCION
+
+
+ACTUALIZACION: id '++'
+            | id '--'
+
+
+INSDOWHILE: 'do' SECCION 'while' '(' EXPRESION ')' ';'
+
+
+INSSWITCH: 'switch' '(' EXPRESION ')' '{' INSCASES INSDEFAULT '}'
+        | 'switch' '(' EXPRESION ')' '{' INSDEFAULT '}'
+
+
+INSCASES: INSCASES 'case' EXPRESION ':' CONTENIDO
+        | 'case' EXPRESION ':' CONTENIDO
+
+
+INSDEFAULT: 'default' ':' CONTENIDO
+    | epsilon 
+
+
+INSWRITELINE: 'writeline' '(' EXPRESION ')' ';'
+
+
+EXPRESION: EXPRESION '+' EXPRESION
+        | EXPRESION '-' EXPRESION
+        | EXPRESION '*' EXPRESION
+        | EXPRESION '/' EXPRESION
+        | EXPRESION '^' EXPRESION
+        | EXPRESION '%' EXPRESION
+        | '-' EXPRESION
+        | EXPRESION '<' EXPRESION
+        | EXPRESION '<=' EXPRESION
+        | EXPRESION '>' EXPRESION
+        | EXPRESION '>=' EXPRESION
+        | EXPRESION '==' EXPRESION
+        | EXPRESION '!=' EXPRESION
+        | EXPRESION '&&' EXPRESION
+        | EXPRESION '||' EXPRESION
+        | '!' EXPRESION
+        | VALOR
+
+
+VALOR: numero
+    | decimal
+    | cadena
+    | caracter
+    | true
+    | false
+    | null
+    | id
+    | id '[' EXPRESION ']'
+    | 'getvalue' '(' id ',' EXPRESION ')'
+    | 'tolower' '(' EXPRESION ')'
+    | 'toupper' '(' EXPRESION ')'
+    | 'length' '(' EXPRESION ')'
+    | 'truncate' '(' EXPRESION ')'
+    | 'round' '(' EXPRESION ')'
+    | 'typeof' '(' EXPRESION ')'
+    | 'tostring' '(' EXPRESION ')'
+    | 'tochararray' '(' EXPRESION ')'
+    | '(' EXPRESION ')'
+    | LLAMADA
+
+
+TIPOSDATOS: 'string'
+        | 'int'
+        | 'double'
+        | 'boolean'
+        | 'char'
