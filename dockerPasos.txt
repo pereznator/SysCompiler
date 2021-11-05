@@ -2,3 +2,8 @@ Pasos para crear contenedor en Docker:
 
 - Crear Dockerfile y .dockerignore
 - correr comando: docker build -t nombre .
+
+
+docker ps: para ver contenedores ejecutandose
+docker run -dp 3000 syscompiler: para ejecutar syscompiler
+docker logs container-id: para ver la consola
