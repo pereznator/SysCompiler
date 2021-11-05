@@ -219,14 +219,22 @@ LISTAEXPRESIONES:
 
 
 DECFUNCION:
-    TIPOSDATOS id '(' ')' STATEMENT
+    TIPOSDATOS id VECFUNCINO '(' ')' STATEMENT
     {
-        $$ = new FuncionInstruccion($2, $5, new Array(), $1, @1.first_line, @1.first_column);
+        $$ = new FuncionInstruccion($2, $6, new Array(), $1, $3, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id '(' DEFPARAMETROS ')' STATEMENT
+    | TIPOSDATOS id VECFUNCINO '(' DEFPARAMETROS ')' STATEMENT
     {
-        $$ = new FuncionInstruccion($2, $6, $4, $1, @1.first_line, @1.first_column);
+        $$ = new FuncionInstruccion($2, $7, $5, $1, $3, @1.first_line, @1.first_column);
     }
+;
+
+VECFUNCINO: 
+     '[' ']'
+     {
+         $$ = 'array';
+     }
+    | /* epsilon */
 ;
 
 DECMETODO:
@@ -246,11 +254,25 @@ DEFPARAMETROS:
         $1.push(new Declaracion($3, $4, null, @1.first_line, @1.first_column));
         $$ = $1;
     }
+    | DEFPARAMETROS ',' DECDYNAMICLIST
+    {
+        $1.push($3);
+        $$ = $1;
+    }
+    | DEFPARAMETROS ',' DECVECTOR
+    {
+        $1.push($3);
+        $$ = $1;
+    }
     | TIPOSDATOS id
     {
         $$ = [new Declaracion($1, $2, null, @1.first_line, @1.first_column)];
     }
     | DECDYNAMICLIST
+    {
+        $$ = [$1]
+    }
+    | DECVECTOR
     {
         $$ = [$1]
     }
@@ -293,7 +315,7 @@ SEGMENTO:
     | INSSWITCH
     | ASIGNACION ';'
     | ACTUALIZACION ';'
-    | DECVECTOR
+    | DECVECTOR ';'
     | ASIGNACIONVECTOR
     | DECDYNAMICLIST ';'
     | APPEND
@@ -470,17 +492,21 @@ CASTEO:
 ;
 
 DECVECTOR:
-    TIPOSDATOS id '[' ']' '=' 'new' TIPOSDATOS '[' EXPRESION ']' ';'
+    TIPOSDATOS id '[' ']' '=' 'new' TIPOSDATOS '[' EXPRESION ']' 
     {
-        $$ = new DeclaracionVector($1, $2, $9, null, @1.first_line, @1.first_column);
+        $$ = new DeclaracionVector($1, $2, $9, null, null, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id '[' ']' '=' '{' LISTAEXPRESIONES '}' ';'
+    | TIPOSDATOS id '[' ']' '=' '{' LISTAEXPRESIONES '}' 
     {
-        $$ = new DeclaracionVector($1, $2, null, $7, @1.first_line, @1.first_column);
+        $$ = new DeclaracionVector($1, $2, null, $7, null, @1.first_line, @1.first_column);
     }
-    | TIPOSDATOS id '[' ']' ';'
+    | TIPOSDATOS id '[' ']' 
     {
-        $$ = new DeclaracionVector($1, $2, null, null, @1.first_line, @1.first_column);
+        $$ = new DeclaracionVector($1, $2, null, null, null, @1.first_line, @1.first_column);
+    }
+    | TIPOSDATOS id '[' ']' '=' EXPRESION
+    {
+        $$ = new DeclaracionVector($1, $2, null, null, $6, @1.first_line, @1.first_column);
     }
 ;
 

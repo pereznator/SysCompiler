@@ -1,0 +1,9 @@
+back/node_modules
+
+front
+
+gitignore
+
+*.pdf
+
+*.txt

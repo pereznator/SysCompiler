@@ -1,0 +1,4 @@
+Pasos para crear contenedor en Docker:
+
+- Crear Dockerfile y .dockerignore
+- correr comando: docker build -t nombre .

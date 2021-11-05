@@ -30,7 +30,12 @@ class Llamada extends instruccion_1.Instruccion {
                     if (value.valor.tipo !== func.parametros[i].tipo) {
                         throw new error_1.Error_(this.linea, this.columna, 'Semantico', `No coinciden los tipos para el parametro ${func.parametros[i].id}`);
                     }
-                    newEnv.guardarDynamicList(func.parametros[i].id, value.valor);
+                    if (func.parametros[i] instanceof declaracion_dynamic_1.DeclaracionDynamic) {
+                        newEnv.guardarDynamicList(func.parametros[i].id, value.valor);
+                    }
+                    else {
+                        newEnv.guardarVector(func.parametros[i].id, value.valor);
+                    }
                 }
                 else {
                     if (func.parametros[i].tipo !== value.tipo) {

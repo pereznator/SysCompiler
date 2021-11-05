@@ -1,0 +1,77 @@
+int burbuja[]( int num[] ){
+  int i;
+  boolean flag = true;
+  int temp;
+  while ( flag ){
+    flag = false;  
+    for( i=0;  i < length(num) -1;  i++ ){
+      if ( num[ i ] > num[i+1] ){
+        temp = num[ i ]; 
+        num[ i ] = num[ i+1 ];
+        num[ i+1 ] = temp;
+        flag = true; 
+      } 
+    } 
+  } 
+  return num;
+}
+
+int fibonacci(int n)
+{
+    if (n>1){
+       return fibonacci(n-1) + fibonacci(n-2);  
+    }
+    else if (n==1) {  
+        return 1;
+    }
+    else if (n==0){  
+        return 0;
+    }
+    else{ 
+        writeLine("Debes ingresar un tamaño mayor o igual a 1");
+        return -1; 
+    }
+}
+
+void parImpar (int t[], int pos)
+    {
+      int res;
+      if(pos<length(t)) {
+        if(t[pos]%2==0)
+        {
+          writeline("El valor "+t[pos]+" es par");
+        }else{
+          writeline("El valor "+t[pos]+" es impar");
+        }
+        parImpar(t,pos+1);
+      }
+    }
+
+void torresHanoi(int discos, int torre1, int torre2, int torre3){
+    if (discos==1){
+      writeline("Mover disco de Torre " + torre1 + " a Torre " + torre3);
+    } else {
+    torresHanoi(discos-1, torre1, torre3, torre2);
+    writeline("Mover disco de Torre " + torre1 + " a Torre " + torre3);
+    torresHanoi(discos-1, torre2, torre1, torre3);
+  }
+}
+
+
+void main() {
+  //torresHanoi (3, 1, 2, 3);
+  
+  //int datos[]={1,2,3,4,5,6,7,8,9};
+  //parImpar(datos, 0);
+  
+  //for (int i = 0; i < 10; i++) {
+  //  writeLine(fibonacci(i));
+  //}
+  
+  //int arreglo[] = {8,6,7,2,1,8,6,8,7,1,9,7,7,10};
+  //int arregloOrdenado[] = new int[length(arreglo)]; 
+  //arregloOrdenado = burbuja(arreglo);
+  //WriteLine(arregloOrdenado);
+}
+
+start with main();

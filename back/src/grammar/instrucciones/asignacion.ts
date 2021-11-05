@@ -6,14 +6,15 @@ import { Ternario } from './ternario';
 import { Error_ } from '../Error/error';
 import { Casteo } from './casteo';
 import { ToCharArray } from '../Expresiones/toCharArray';
+import { Llamada } from './llamada-instruccion';
 
 export class Asignacion extends Instruccion{
 
     public id : string;
-    public value : Expresion | Ternario | Casteo | ToCharArray;
+    public value : Expresion | Ternario | Casteo | ToCharArray | Llamada;
     public tipoInstruccion = 'asignacion';
 
-    constructor(tipo: Tipo,  id: string, value : Expresion | Ternario | Casteo | ToCharArray, line : number, column: number){
+    constructor(tipo: Tipo,  id: string, value : Expresion | Ternario | Casteo | ToCharArray | Llamada, line : number, column: number){
         super(line, column);
         this.id = id;
         this.value = value;

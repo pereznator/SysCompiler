@@ -4,17 +4,40 @@ import { Tipo } from '../abstractas/retorno';
 import { Expresion } from '../abstractas/expresion';
 import { Vector } from '../simbolos/vector';
 import { Error_ } from '../Error/error';
+import { Llamada } from './llamada-instruccion';
 
 export class DeclaracionVector extends Instruccion {
 
     public tipoInstruccion = 'declaracion vector';
 
-    constructor(private tipo: Tipo, private id: string, private posiciones: Expresion, private elementos: Array<Expresion>, linea: number, columna: number) {
+    constructor(private tipo: Tipo, private id: string, private posiciones: Expresion, private elementos: Array<Expresion>, private expresion: Expresion | Instruccion, linea: number, columna: number) {
         super(linea, columna);
     }
 
     public ejecutar(env: Entorno) {
         console.log('Ejecutando declaracion de vector');
+        if (this.expresion) {
+            if (!(this.expresion instanceof Llamada)) {
+                throw new Error_(this.linea, this.columna, 'Semantico', `No se puede asignar expresion a vector ${this.id}`);
+            }
+            const val = this.expresion.ejecutar(env);
+            if (val === undefined || val === null) {
+                throw new Error_(this.linea, this.columna, 'Semantico', `No se puede asignar indefinido a vector ${this.id}`);
+            }
+            if (val.tipo !== Tipo.ARRAY) {
+                throw new Error_(this.linea, this.columna, 'Semantico', `No se puede asignar expresion que no sea vector a vector ${this.id}`);
+            }
+            if (!(val.valor instanceof Vector)) {
+                throw new Error_(this.linea, this.columna, 'Semantico', `No se puede asignar expresion que no sea vector a vector ${this.id}`);
+            }
+            if (this.tipo !== val.valor.tipo) {
+                throw new Error_(this.linea, this.columna, 'Semantico', `No coinciden los tipos de datos para ${this.id}`);
+            }
+            env.guardarVector(this.id, val.valor);
+            const glob = env.getGlobal()
+            glob.simbolos.push({identificador: this.id, tipoVariable: 'vector', tipo: this.tipo, entorno: env.nombreEntorno, linea: this.linea, columna: this.columna});
+            return;
+        }
         let arreglo = new Array();
         if (this.posiciones) {
             let exp = this.posiciones.ejecutar(env);
