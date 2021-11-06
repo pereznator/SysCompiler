@@ -4,3 +4,9 @@ services:
     image: syscompiler
     ports:
       - "5000:3000"
+  front:
+    image: frontsys
+    ports:
+      - "4201:4200"
+    links:
+      - back
